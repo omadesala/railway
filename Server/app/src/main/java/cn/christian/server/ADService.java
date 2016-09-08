@@ -7,13 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
-import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.util.Log;
 
 import java.io.IOException;
@@ -44,11 +40,11 @@ public class ADService extends Service {
     public static final String SENSOR_VELOCITY = "SENSOR_VELOCITY";
     public static final String SENSOR_ZERO_POINT = "SENSOR_ZERO_POINT";
     public static final String SENSOR_VOLTAGE_SCOPE = "SENSOR_VOLTAGE_SCOPE";
-    public static final String MEASURE_DISTANCE_DATA = "MEASURE_DISTANCE";
+    public static final String SENSOR_DATA = "MEASURE_DISTANCE";
 
     public static final String DEVICE_ACTION = "com.christian.server.DEVICE_ACTION";
     public static final String SETTING_ACTION = "com.christian.server.SETTING_ACTION";
-    public static final String SENSOR_DISTANCE_ACTION = "com.christian.server.SENSOR_DISTANCE";
+    public static final String SENSOR_DATA_COMMING = "com.christian.server.SENSOR_DISTANCE";
 
     private int curMode = SCAN_MODE;
 
@@ -57,7 +53,7 @@ public class ADService extends Service {
     public static float sensorZerovalue = 0;
     public static float sensorVoltateScopevalue = 0;
 
-    public static float micronVoltage = 0;// 每微米电压值
+    public static float micronVoltage = (float) (17.0 / 5000);// 每微米电压值
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -290,11 +286,12 @@ public class ADService extends Service {
                     boolean done = false;
 
                     StringBuffer sb = new StringBuffer();
+                    DataParser dataParser = new DataParser();
 
                     while (!done && in.hasNext()) {
 
                         String token = in.next();
-                        Log.e(TAG, token);
+//                        Log.e(TAG, token);
 
                         if (token.startsWith("+YAV")) {
                             sb = new StringBuffer();
@@ -304,23 +301,22 @@ public class ADService extends Service {
                         if (token.endsWith("EEFF")) {
                             String record = sb.toString();
 
-                            DataParser dataParser = new DataParser();
+
 //                            float voltage = dataParser.chanel0Voltage(record);
-                            float[] voltages = dataParser.chanel0Voltages(record);
-
-//                            Handler handler = MeasureFragment.handler;
-//                            Message obtainMsg = Message.obtain(handler, MeasureFragment.MSG_DATA_RECEIVED);
-//
-//                            Bundle bundle = new Bundle();
-//                            bundle.putFloatArray(MEASURE_DISTANCE_DATA, voltages);
-//                            obtainMsg.setData(bundle);
-//                            obtainMsg.sendToTarget();
-
-
-                            Intent intent = new Intent();
-                            intent.setAction(ADService.SENSOR_DISTANCE_ACTION);
-                            intent.putExtra(ADService.MEASURE_DISTANCE_DATA, voltages);
-                            mContext.sendBroadcast(intent);
+                            try {
+                                float[] distance = dataParser.getValidateData(record);
+                                if (distance != null) {
+                                    Log.d("ADService", "data length is: " + distance.length);
+                                    Log.d("ADService", "data is: " + distance.toString());
+                                    Intent intent = new Intent();
+                                    intent.setAction(ADService.SENSOR_DATA_COMMING);
+                                    intent.putExtra(ADService.SENSOR_DATA, distance);
+                                    mContext.sendBroadcast(intent);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Log.e("ADService", e.getMessage());
+                            }
                         }
                     }
 
@@ -351,6 +347,7 @@ public class ADService extends Service {
 
             {
                 Log.e(TAG, "Exception:" + e.getClass().getName() + " msg:" + e.getMessage());
+                e.printStackTrace();
             }
 
             Log.e(TAG, "-run()");

@@ -11,8 +11,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +18,6 @@ import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -28,9 +25,6 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.common.collect.Lists;
-
-import java.util.List;
 
 /**
  * Created by Administrator on 2016/9/1.
@@ -45,33 +39,6 @@ public class MeasureFragment extends Fragment {
     private static float maxScope;
     private static float maxValue;
     private static float maxPoint;
-//
-//    static Handler handler = new Handler() {
-//        @Override
-//        public void handleMessage(Message msg) {
-////            cmd.append((String) msg.obj);
-//
-//            switch (msg.what) {
-//                case MSG_DATA_RECEIVED:
-////                    Log.i("test", msg.getData().toString());
-//                    float[] distances = msg.getData().getFloatArray(ADService.MEASURE_DISTANCE_DATA);
-////                    maxPoint = getMax(distances);
-////                    addEntry(voltage*maxValue, hide);
-//                    maxPoint = Float.MIN_VALUE;
-////                    clearEntry();
-//                    addEntrys(distances, hide);
-////                    for (int i = 0; i < distances.length; i++) {
-////                        if (distances[i] > maxPoint) {
-////                            maxPoint = distances[i];
-////                        }
-////                        addEntry(distances[i], hide);
-////                    }
-//                    break;
-//                default:
-//                    break;
-//            }
-//        }
-//    };
 
 
     public static float getMax(float[] datas) {
@@ -203,7 +170,7 @@ public class MeasureFragment extends Fragment {
         super.onCreate(savedInstanceState);
         DataReceiver actionReceiver = new DataReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(ADService.SENSOR_DISTANCE_ACTION);
+        filter.addAction(ADService.SENSOR_DATA_COMMING);
         getActivity().registerReceiver(actionReceiver, filter);
     }
 
@@ -272,46 +239,30 @@ public class MeasureFragment extends Fragment {
     }
 
     // 添加进去一个坐标点
-    private static void addEntrys(float[] voltages, boolean hide) {
+    private static void addEntrys(float[] distance, boolean hide) {
 
         LineData data = mChart.getData();
-//        LineData data = new LineData();
-
-//        mChart.clearValues();
-//        mChart.getData().removeDataSet(0);
-        // 每一个LineDataSet代表一条线，每张统计图表可以同时存在若干个统计折线，这些折线像数组一样从0开始下标。
-        // 本例只有一个，那么就是第0条折线
         LineDataSet set = data.getDataSetByIndex(0);
-
-        // 如果该统计折线图还没有数据集，则创建一条出来，如果有则跳过此处代码。
         if (set == null) {
             set = createLineDataSet();
             data.addDataSet(set);
         }
 
-        // 先添加一个x坐标轴的值
-        // 因为是从0开始，data.getXValCount()每次返回的总是全部x坐标轴上总数量，所以不必多此一举的加1
-//        data.addXValue((data.getXValCount()) + "");
-//        data.clearValues();
-        for (int i = 0; i < voltages.length; i++) {
-            int indexLastDataSet = data.getDataSetCount() - 1;
-             Entry lastEntry = set.getEntryForXIndex(
-                    set.getEntryCount() - 1);
-                       data.removeEntry(lastEntry, indexLastDataSet);
+        int entrynum = set.getEntryCount();
+        for (int i = 0; i < entrynum; i++) {
+            set.removeLast();
+        }
+
+        mChart.notifyDataSetChanged();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < distance.length; i++) {
+            sb.append(distance[i]).append(",");
+            Entry entry = new Entry(distance[i], set.getEntryCount());
             data.addXValue(i + "");
+            data.addEntry(entry, 0);
         }
 
-
-        // 如从0开始一样的数组下标，那么不必多次一举的加1
-        for (int i = 0; i < voltages.length; i++) {
-            if (voltages[i] > maxPoint) {
-                maxPoint = voltages[i];
-            }
-             int indexLast = getLastDataSetIndex(data);
-             int count = set.getEntryCount();
-             Entry entry = new Entry(voltages[i], count);
-             data.addEntry(entry, indexLast);
-        }
+        Log.d("MEASURE", "data: " + sb.toString());
 
 
         // 像ListView那样的通知数据更新
@@ -337,7 +288,7 @@ public class MeasureFragment extends Fragment {
         // 此代码将刷新图表的绘图
         if (!hide) {
 //            mChart.moveViewToX(0);
-            mChart.moveViewToX(data.getXValCount() - 5);
+//            mChart.moveViewToX(data.getXValCount() - 5);
             mChart.invalidate();
         }
 
@@ -426,13 +377,10 @@ public class MeasureFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-//            int type = intent.getIntExtra(ADService.SENSOR_DISTANCE, -1);
-            float[] distances = intent.getFloatArrayExtra(ADService.MEASURE_DISTANCE_DATA);
-//            addEntrys(distances, hide);
-
-            for (int i = 0; i < distances.length; i++) {
-                addEntry(distances[i], hide);
-            }
+            float[] distances = intent.getFloatArrayExtra(ADService.SENSOR_DATA);
+            Log.d("MEASURE", "DATA RECEIVED !!! length = " + distances.length);
+            Log.d("MEASURE", "DATA: " + distances.toString());
+            addEntrys(distances, hide);
         }
     }
 }

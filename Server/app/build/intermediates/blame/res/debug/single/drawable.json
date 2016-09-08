@@ -1,30 +1,30 @@
 [
     {
-        "merged": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\industrial_robot_sh.png",
-        "source": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\src\\main\\res\\drawable\\industrial_robot_sh.png"
+        "merged": "E:\\workspace\\railway\\Server\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\statistics_256px.png",
+        "source": "E:\\workspace\\railway\\Server\\app\\src\\main\\res\\drawable\\statistics_256px.png"
     },
     {
-        "merged": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\history.png",
-        "source": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\src\\main\\res\\drawable\\history.png"
+        "merged": "E:\\workspace\\railway\\Server\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\measure.png",
+        "source": "E:\\workspace\\railway\\Server\\app\\src\\main\\res\\drawable\\measure.png"
     },
     {
-        "merged": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\setting.png",
-        "source": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\src\\main\\res\\drawable\\setting.png"
+        "merged": "E:\\workspace\\railway\\Server\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\setting.png",
+        "source": "E:\\workspace\\railway\\Server\\app\\src\\main\\res\\drawable\\setting.png"
     },
     {
-        "merged": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\statistics.png",
-        "source": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\src\\main\\res\\drawable\\statistics.png"
+        "merged": "E:\\workspace\\railway\\Server\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\history.png",
+        "source": "E:\\workspace\\railway\\Server\\app\\src\\main\\res\\drawable\\history.png"
     },
     {
-        "merged": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\statistics_256px.png",
-        "source": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\src\\main\\res\\drawable\\statistics_256px.png"
+        "merged": "E:\\workspace\\railway\\Server\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\statistics.png",
+        "source": "E:\\workspace\\railway\\Server\\app\\src\\main\\res\\drawable\\statistics.png"
     },
     {
-        "merged": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\tab_bg.9.png",
-        "source": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\src\\main\\res\\drawable\\tab_bg.9.png"
+        "merged": "E:\\workspace\\railway\\Server\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\industrial_robot_sh.png",
+        "source": "E:\\workspace\\railway\\Server\\app\\src\\main\\res\\drawable\\industrial_robot_sh.png"
     },
     {
-        "merged": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\measure.png",
-        "source": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\src\\main\\res\\drawable\\measure.png"
+        "merged": "E:\\workspace\\railway\\Server\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\tab_bg.9.png",
+        "source": "E:\\workspace\\railway\\Server\\app\\src\\main\\res\\drawable\\tab_bg.9.png"
     }
 ]

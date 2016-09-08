@@ -1,22 +1,22 @@
 [
     {
-        "merged": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_measure.xml",
-        "source": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\src\\main\\res\\layout\\fragment_measure.xml"
+        "merged": "E:\\workspace\\railway\\Server\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_stat.xml",
+        "source": "E:\\workspace\\railway\\Server\\app\\src\\main\\res\\layout\\fragment_stat.xml"
     },
     {
-        "merged": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\build\\intermediates\\res\\merged\\debug\\layout\\main.xml",
-        "source": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\src\\main\\res\\layout\\main.xml"
+        "merged": "E:\\workspace\\railway\\Server\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_measure.xml",
+        "source": "E:\\workspace\\railway\\Server\\app\\src\\main\\res\\layout\\fragment_measure.xml"
     },
     {
-        "merged": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_history.xml",
-        "source": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\src\\main\\res\\layout\\fragment_history.xml"
+        "merged": "E:\\workspace\\railway\\Server\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_history.xml",
+        "source": "E:\\workspace\\railway\\Server\\app\\src\\main\\res\\layout\\fragment_history.xml"
     },
     {
-        "merged": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_stat.xml",
-        "source": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\src\\main\\res\\layout\\fragment_stat.xml"
+        "merged": "E:\\workspace\\railway\\Server\\app\\build\\intermediates\\res\\merged\\debug\\layout\\main.xml",
+        "source": "E:\\workspace\\railway\\Server\\app\\src\\main\\res\\layout\\main.xml"
     },
     {
-        "merged": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_setting.xml",
-        "source": "C:\\Users\\Administrator\\StudioProjects\\Server\\app\\src\\main\\res\\layout\\fragment_setting.xml"
+        "merged": "E:\\workspace\\railway\\Server\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_setting.xml",
+        "source": "E:\\workspace\\railway\\Server\\app\\src\\main\\res\\layout\\fragment_setting.xml"
     }
 ]
