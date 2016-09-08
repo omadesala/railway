@@ -292,10 +292,13 @@ public class MeasureFragment extends Fragment {
         // 先添加一个x坐标轴的值
         // 因为是从0开始，data.getXValCount()每次返回的总是全部x坐标轴上总数量，所以不必多此一举的加1
 //        data.addXValue((data.getXValCount()) + "");
-        data.clearValues();
+//        data.clearValues();
         for (int i = 0; i < voltages.length; i++) {
+            int indexLastDataSet = data.getDataSetCount() - 1;
+             Entry lastEntry = set.getEntryForXIndex(
+                    set.getEntryCount() - 1);
+                       data.removeEntry(lastEntry, indexLastDataSet);
             data.addXValue(i + "");
-
         }
 
 
@@ -304,8 +307,10 @@ public class MeasureFragment extends Fragment {
             if (voltages[i] > maxPoint) {
                 maxPoint = voltages[i];
             }
-            Entry entry = new Entry(voltages[i], set.getEntryCount());
-            data.addEntry(entry, 0);
+             int indexLast = getLastDataSetIndex(data);
+             int count = set.getEntryCount();
+             Entry entry = new Entry(voltages[i], count);
+             data.addEntry(entry, indexLast);
         }
 
 
@@ -333,6 +338,7 @@ public class MeasureFragment extends Fragment {
         if (!hide) {
 //            mChart.moveViewToX(0);
             mChart.moveViewToX(data.getXValCount() - 5);
+            mChart.invalidate();
         }
 
 //        mChart.moveViewToX(data.getXValCount() - 5);
