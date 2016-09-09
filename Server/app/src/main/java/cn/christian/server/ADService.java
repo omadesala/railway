@@ -22,6 +22,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+import cn.christian.server.utils.Constants;
+
 /**
  * Created by Administrator on 2016/9/1.
  */
@@ -36,22 +38,17 @@ public class ADService extends Service {
     public static final int MSG_DISTANCE = 4;
     public static final String MSG_TYPE = "MSG_TYPE";
 
-    public static final String SENSOR_MAX_SCOPE = "SENSOR_MAX_SCOPE";
-    public static final String SENSOR_VELOCITY = "SENSOR_VELOCITY";
-    public static final String SENSOR_ZERO_POINT = "SENSOR_ZERO_POINT";
-    public static final String SENSOR_VOLTAGE_SCOPE = "SENSOR_VOLTAGE_SCOPE";
-    public static final String SENSOR_DATA = "MEASURE_DISTANCE";
-
-    public static final String DEVICE_ACTION = "com.christian.server.DEVICE_ACTION";
-    public static final String SETTING_ACTION = "com.christian.server.SETTING_ACTION";
-    public static final String SENSOR_DATA_COMMING = "com.christian.server.SENSOR_DISTANCE";
 
     private int curMode = SCAN_MODE;
 
     public static float sensorScopevalue = 0;
     public static float sensorVelocityvalue = 0;
-    public static float sensorZerovalue = 0;
-    public static float sensorVoltateScopevalue = 0;
+    public static float measureDistance = 0;
+    public static float sensorVoltateMinvalue = 0;
+    public static float sensorVoltateMaxvalue = 0;
+    public static float sensorHZ = 100;
+    public static int dataCount = 100;
+
 
     public static float micronVoltage = (float) (17.0 / 5000);// 每微米电压值
 
@@ -69,21 +66,25 @@ public class ADService extends Service {
 
         SharedPreferences setting = getSharedPreferences("setting", Activity.MODE_PRIVATE);
         if (setting != null) {
-            sensorScopevalue = setting.getFloat(SettingFragment.sensorScope, 0);
-            sensorVelocityvalue = setting.getFloat(SettingFragment.sensorVelocity, 0);
-            sensorZerovalue = setting.getFloat(SettingFragment.sensorZero, 0);
-            sensorVoltateScopevalue = setting.getFloat(SettingFragment.sensorVoltageScope, 0);
+            sensorScopevalue = setting.getFloat(Constants.sensorScope, 0);
+            sensorVelocityvalue = setting.getFloat(Constants.sensorVelocity, 0);
+            measureDistance = setting.getFloat(Constants.measureDistance, 0);
+            sensorVoltateMinvalue = setting.getFloat(Constants.sensorVoltageMin, 0);
+            sensorVoltateMaxvalue = setting.getFloat(Constants.sensorVoltageMax, 0);
 
-
+            float sensorVoltateScopevalue = sensorVoltateMaxvalue - sensorVoltateMinvalue;
             if (sensorVoltateScopevalue > 0 && sensorScopevalue > 0) {
                 micronVoltage = sensorVoltateScopevalue / (sensorScopevalue * 1000);
             }
+
+            dataCount = (int) (sensorHZ / sensorVelocityvalue + 100);
+            Log.d("ADservice", "dataCount: " + dataCount);
         }
 
 
         ActionReceiver actionReceiver = new ActionReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(DEVICE_ACTION);
+        filter.addAction(Constants.DEVICE_ACTION);
         registerReceiver(actionReceiver, filter);
 
 
@@ -286,22 +287,23 @@ public class ADService extends Service {
                     boolean done = false;
 
                     StringBuffer sb = new StringBuffer();
-                    DataParser dataParser = new DataParser();
+
+                    DataParser dataParser = new DataParser(dataCount);
 
                     while (!done && in.hasNext()) {
 
                         String token = in.next();
 //                        Log.e(TAG, token);
 
-                        if (token.startsWith("+YAV")) {
+                        if (token.startsWith(Constants.SENSOR_DATA_START_TAG)) {
+                            Log.d("ADService", " a record start");
                             sb = new StringBuffer();
                         }
                         sb.append(token);
 
                         if (token.endsWith("EEFF")) {
                             String record = sb.toString();
-
-
+                            Log.d("ADService", "received a record " + record);
 //                            float voltage = dataParser.chanel0Voltage(record);
                             try {
                                 float[] distance = dataParser.getValidateData(record);
@@ -309,8 +311,8 @@ public class ADService extends Service {
                                     Log.d("ADService", "data length is: " + distance.length);
                                     Log.d("ADService", "data is: " + distance.toString());
                                     Intent intent = new Intent();
-                                    intent.setAction(ADService.SENSOR_DATA_COMMING);
-                                    intent.putExtra(ADService.SENSOR_DATA, distance);
+                                    intent.setAction(Constants.SENSOR_DATA_COMMING);
+                                    intent.putExtra(Constants.SENSOR_DATA, distance);
                                     mContext.sendBroadcast(intent);
                                 }
                             } catch (Exception e) {
@@ -378,13 +380,17 @@ public class ADService extends Service {
 
                 case SETTING_MODE:
 
-                    sensorScopevalue = intent.getFloatExtra(SENSOR_MAX_SCOPE, 0);
-                    sensorZerovalue = intent.getFloatExtra(SENSOR_ZERO_POINT, 0);
-                    sensorVoltateScopevalue = intent.getFloatExtra(SENSOR_VOLTAGE_SCOPE, 0);
+                    sensorScopevalue = intent.getFloatExtra(Constants.SENSOR_MAX_SCOPE, 0);
+                    sensorVelocityvalue = intent.getFloatExtra(Constants.SENSOR_VELOCITY, 0);
+                    measureDistance = intent.getFloatExtra(Constants.MEASURE_DISTANCE, 0);
+                    sensorVoltateMaxvalue = intent.getFloatExtra(Constants.SENSOR_VOLTAGE_MAX, 0);
+                    sensorVoltateMinvalue = intent.getFloatExtra(Constants.SENSOR_VOLTAGE_MIN, 0);
 
+                    float sensorVoltateScopevalue = sensorVoltateMaxvalue - sensorVoltateMinvalue;
                     if (sensorVoltateScopevalue > 0 && sensorScopevalue > 0) {
                         micronVoltage = sensorVoltateScopevalue / (sensorScopevalue * 1000);
                     }
+
                     break;
 
                 default:

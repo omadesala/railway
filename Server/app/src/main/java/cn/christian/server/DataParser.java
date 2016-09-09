@@ -13,15 +13,22 @@ import java.util.List;
  */
 public class DataParser {
 
-    private String tag = "+YAV";
-    private float data0;
+
     private float scope = 10;
     private float resolution = 4096;
-    private float epslon = (float) 0.01;
+    private float epslon = 0.01f;
     private float needNumber = 250;
+    private float baseVoltage = 0.0f;
+
+
     private List<Float> voltageDatas = Lists.newArrayList();// 确认保留或者放弃后清空该数据
 
-    private boolean parsed = false;
+    private boolean dataEnd = false;
+
+    public DataParser(int dataLength) {
+        needNumber = dataLength;
+    }
+
 
     public float[] getValidateData(String record) {
 
@@ -30,29 +37,30 @@ public class DataParser {
         Float avg = getAverage(voltage);
 
         int size = voltageDatas.size();
-        if (parsed) {
-            Log.d("Parser", "测量未清零");
-            return null;
-        }
 
         if (dValue < epslon && avg < epslon) {
-            // 丢弃0数据
-            Log.d("Parser", "丢弃0数据");
+            Log.d("Parser", "测量未开始，丢弃0数据");
+            dataEnd = false;
+            voltageDatas.clear();
             return null;
-        } else if (size < needNumber) {
+        } else if (size < needNumber) { // measuring ...
             for (int i = 0; i < voltage.length; i++) {
                 voltageDatas.add(voltage[i]);
             }
             Log.d("Parser", "add valid data ok,data size: " + size);
             return null;
+        } else {
+            if (dataEnd) {
+                Log.d("Parser", "测量已经完成，丢弃0数据");
+                return null;
+            }
         }
 
-        Log.d("Parser", "get enough points");
 
+        Log.d("Parser", "get enough data");
+        dataEnd = true;
         Float validateData[] = new Float[size];
-
-        parsed = true;
-        float[] dis = voltage2Distance(voltageDatas.toArray(validateData));
+        float[] dis = getDistanceFromVoltage(voltageDatas.toArray(validateData));
         return dis;
     }
 
@@ -76,7 +84,7 @@ public class DataParser {
                 .split(record);
 
         Iterator<String> iterator = result.iterator();
-        iterator.next();// tag
+        iterator.next();// DATA
         String data0 = iterator.next();// data0
 
         int value = Integer.parseInt(data0, 16);
@@ -97,7 +105,7 @@ public class DataParser {
                 .split(record);
 
         Iterator<String> iterator = result.iterator();
-        String tag = iterator.next();// tag
+        String tag = iterator.next();// TAG
         tag = tag.substring(5, 9);
         String dataStr = iterator.next();// data0
         int datalength = Integer.parseInt(tag, 16);
@@ -119,7 +127,7 @@ public class DataParser {
     }
 
 
-    public float[] voltage2Distance(Float voltage[]) {
+    public float[] getDistanceFromVoltage(Float voltage[]) {
 
         Log.d("Parser", "get dist from voltage");
         int datalength = voltage.length;

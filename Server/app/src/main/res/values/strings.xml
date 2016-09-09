@@ -3,8 +3,9 @@
     <string name="app_name">WIFI数据采集</string>
     <string name="history">历史数据</string>
     <string name="measure_mode">采集模式</string>
-    <string name="sensor_voltage_min">传感器电压范围</string>
-    <string name="sensor_zero_point">传感器零点(mm)</string>
+    <string name="sensor_scope">传感器量程(mm)</string>
+    <string name="sensor_voltage_min">传感器电压下限</string>
+    <string name="sensor_voltage_max">传感器电压上限</string>
     <string name="sensor_velocity">移动速度(m/s)</string>
     <string name="measure_distance">测量长度 (m) </string>
     <string name="measure_scan">扫描模式</string>

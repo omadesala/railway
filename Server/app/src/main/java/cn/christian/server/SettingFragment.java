@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import com.google.common.base.Strings;
 
+import cn.christian.server.utils.Constants;
+
 /**
  * Created by Administrator on 2016/9/1.
  */
@@ -34,8 +36,8 @@ public class SettingFragment extends Fragment {
     private EditText sensorScopeEditText;
     private EditText sensorVelocityEditText;
     private EditText measureDistanceEditText;
-    private EditText sensorZeroEditText;
-    private EditText sensorVoltageScopeEditText;
+    private EditText sensorVoltageMinEditText;
+    private EditText sensorVoltageMaxEditText;
 
     private EditText minScopeEditText;
     private EditText maxScopeEditText;
@@ -45,24 +47,11 @@ public class SettingFragment extends Fragment {
     private RadioButton scanMode;
     private RadioButton interuptMode;
 
-
-    public static String sensorScope = "SENSOR_SCOPE";
-    public static String sensorVelocity = "SENSOR_VELOCITY";
-    public static String measureDistance = "MEASURE_DISTANCE";
-    public static String sensorZero = "SENSOR_ZERO";
-    public static String sensorVoltageScope = "SENSOR_VOLTAGE_SCOPE";
-
-    public static String maxScope = "MAXSCOPE";
-    public static String minScope = "MINSCOPE";
-
-    public static String dataMode = "DATAMODE";
-
-
     float sensorScopeValue = 5;
-    float sensorVelocityValue = (float) 0.5;
+    float sensorVelocityValue = 5;
     float measureDistanceValue = (float) 1.0;
-    float sensorZeroValue = 2;
-    float sensorVoltageScopeValue = 12;
+    float sensorVoltageMaxValue = -5;
+    float sensorVoltageMinValue = 12;
     float minScopeValue = 0;
     float maxScopeValue = 0;
 
@@ -85,10 +74,10 @@ public class SettingFragment extends Fragment {
         View settingLayout = inflater.inflate(R.layout.fragment_setting, container, false);
 
         sensorScopeEditText = (EditText) settingLayout.findViewById(R.id.sensor_scope);
+        sensorVoltageMinEditText = (EditText) settingLayout.findViewById(R.id.sensor_voltage_min);
+        sensorVoltageMaxEditText = (EditText) settingLayout.findViewById(R.id.sensor_voltage_max);
         sensorVelocityEditText = (EditText) settingLayout.findViewById(R.id.sensor_velocity);
         measureDistanceEditText = (EditText) settingLayout.findViewById(R.id.measure_distance);
-        sensorZeroEditText = (EditText) settingLayout.findViewById(R.id.sensor_zero);
-        sensorVoltageScopeEditText = (EditText) settingLayout.findViewById(R.id.sensor_voltage_scope);
 
         minScopeEditText = (EditText) settingLayout.findViewById(R.id.min_scope);
         maxScopeEditText = (EditText) settingLayout.findViewById(R.id.max_scope);
@@ -104,6 +93,29 @@ public class SettingFragment extends Fragment {
                 }
             }
         });
+
+        sensorVoltageMinEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    InputMethodManager imm = (InputMethodManager) getActivity()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(sensorVoltageMinEditText.getWindowToken(), 0);
+                }
+            }
+        });
+        sensorVoltageMaxEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    InputMethodManager imm = (InputMethodManager) getActivity()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(sensorVoltageMaxEditText.getWindowToken(), 0);
+                }
+            }
+        });
+
+
         sensorVelocityEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -121,26 +133,6 @@ public class SettingFragment extends Fragment {
                     InputMethodManager imm = (InputMethodManager) getActivity()
                             .getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(measureDistanceEditText.getWindowToken(), 0);
-                }
-            }
-        });
-        sensorZeroEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    InputMethodManager imm = (InputMethodManager) getActivity()
-                            .getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(sensorZeroEditText.getWindowToken(), 0);
-                }
-            }
-        });
-        sensorVoltageScopeEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    InputMethodManager imm = (InputMethodManager) getActivity()
-                            .getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(sensorVoltageScopeEditText.getWindowToken(), 0);
                 }
             }
         });
@@ -176,19 +168,19 @@ public class SettingFragment extends Fragment {
                                         SharedPreferences.Editor edit = setting.edit();
 
                                         Editable sensorScopeValueEdit = sensorScopeEditText.getText();
+                                        Editable sensorVoltageMinScopeEdit = sensorVoltageMinEditText.getText();
+                                        Editable sensorVoltageMaxScopeEdit = sensorVoltageMaxEditText.getText();
                                         Editable sensorVelocityValueEdit = sensorVelocityEditText.getText();
                                         Editable measureDistanceValueEdit = measureDistanceEditText.getText();
-                                        Editable sensorZeroEdit = sensorZeroEditText.getText();
-                                        Editable sensorVoltageScopeEdit = sensorVoltageScopeEditText.getText();
 
                                         Editable maxScopeEdit = maxScopeEditText.getText();
                                         Editable minScopeEdit = minScopeEditText.getText();
 
                                         String sensorScopeStr = "";
+                                        String sensorVoltageMinScopeStr = "";
+                                        String sensorVoltageMaxScopeStr = "";
                                         String sensorVelocityStr = "";
                                         String measureDistanceStr = "";
-                                        String sensorZeroStr = "";
-                                        String sensorVoltageScopeStr = "";
 
                                         String minScopeStr = "";
                                         String maxScopeStr = "";
@@ -199,6 +191,19 @@ public class SettingFragment extends Fragment {
                                         } else {
                                             sensorScopeStr = sensorScopeValueEdit.toString();
                                         }
+
+                                        if (sensorVoltageMaxScopeEdit == null || Strings.isNullOrEmpty(sensorVoltageMaxScopeEdit.toString())) {
+                                            showDialog("参数提示", "未输入任何参数");
+                                            return;
+                                        } else {
+                                            sensorVoltageMaxScopeStr = sensorVoltageMaxScopeEdit.toString();
+                                        }
+                                        if (sensorVoltageMinScopeEdit == null || Strings.isNullOrEmpty(sensorVoltageMinScopeEdit.toString())) {
+                                            showDialog("参数提示", "未输入任何参数");
+                                            return;
+                                        } else {
+                                            sensorVoltageMinScopeStr = sensorVoltageMinScopeEdit.toString();
+                                        }
                                         if (sensorVelocityValueEdit == null || Strings.isNullOrEmpty(sensorVelocityValueEdit.toString())) {
                                             showDialog("参数提示", "未输入任何参数");
                                             return;
@@ -207,18 +212,6 @@ public class SettingFragment extends Fragment {
                                         }
 
 
-                                        if (sensorZeroEdit == null || Strings.isNullOrEmpty(sensorZeroEdit.toString())) {
-                                            showDialog("参数提示", "未输入任何参数");
-                                            return;
-                                        } else {
-                                            sensorZeroStr = sensorZeroEdit.toString();
-                                        }
-                                        if (sensorVoltageScopeEdit == null || Strings.isNullOrEmpty(sensorVoltageScopeEdit.toString())) {
-                                            showDialog("参数提示", "未输入任何参数");
-                                            return;
-                                        } else {
-                                            sensorVoltageScopeStr = sensorVoltageScopeEdit.toString();
-                                        }
                                         if (measureDistanceValueEdit == null || Strings.isNullOrEmpty(measureDistanceValueEdit.toString())) {
                                             showDialog("参数提示", "未输入任何参数");
                                             return;
@@ -242,14 +235,9 @@ public class SettingFragment extends Fragment {
                                         }
 
 
-                                        minScopeValue = Float.parseFloat(minScopeStr);
-                                        if (minScopeValue < 0) {
-                                            showDialog("错误提示", "显示下限不能小于0");
-                                            return;
-                                        }
-                                        maxScopeValue = Float.parseFloat(maxScopeStr);
-                                        if (maxScopeValue < 0 || minScopeValue > maxScopeValue) {
-                                            showDialog("错误提示", "显示上限小于0或者小于下限");
+                                        sensorScopeValue = Float.parseFloat(sensorScopeStr);
+                                        if (sensorScopeValue <= 0) {
+                                            showDialog("错误提示", "传感器量程不能小于等于0");
                                             return;
                                         }
 
@@ -265,34 +253,37 @@ public class SettingFragment extends Fragment {
                                         }
 
 
-                                        sensorScopeValue = Float.parseFloat(sensorScopeStr);
-                                        if (sensorScopeValue <= 0) {
-                                            showDialog("错误提示", "传感器量程不能小于等于0");
+                                        sensorVoltageMinValue = Float.parseFloat(sensorVoltageMinScopeStr);
+                                        sensorVoltageMaxValue = Float.parseFloat(sensorVoltageMaxScopeStr);
+
+
+                                        minScopeValue = Float.parseFloat(minScopeStr);
+                                        if (minScopeValue < 0) {
+                                            showDialog("错误提示", "显示下限不能小于0");
                                             return;
                                         }
-                                        sensorZeroValue = Float.parseFloat(sensorZeroStr);
-                                        if (sensorZeroValue <= 0) {
-                                            showDialog("错误提示", "零点不能小于等于0");
+                                        maxScopeValue = Float.parseFloat(maxScopeStr);
+                                        if (maxScopeValue < 0 || minScopeValue > maxScopeValue) {
+                                            showDialog("错误提示", "显示上限小于0或者小于下限");
                                             return;
                                         }
 
+                                        edit.putFloat(Constants.sensorScope, sensorScopeValue);
+                                        edit.putFloat(Constants.sensorVelocity, sensorVelocityValue);
+                                        edit.putFloat(Constants.measureDistance, measureDistanceValue);
+                                        edit.putFloat(Constants.sensorVoltageMin, sensorVoltageMinValue);
+                                        edit.putFloat(Constants.sensorVoltageMax, sensorVoltageMaxValue);
 
-                                        edit.putFloat(maxScope, maxScopeValue);
-                                        edit.putFloat(minScope, minScopeValue);
+                                        edit.putFloat(Constants.maxScope, maxScopeValue);
+                                        edit.putFloat(Constants.minScope, minScopeValue);
 
-                                        edit.putFloat(sensorScope, sensorScopeValue);
-                                        edit.putFloat(sensorVelocity, sensorVelocityValue);
-                                        edit.putFloat(measureDistance, measureDistanceValue);
-                                        edit.putFloat(sensorZero, sensorZeroValue);
-                                        edit.putFloat(sensorVoltageScope, sensorVoltageScopeValue);
-
-                                        if (scanMode.isChecked()) {
-                                            edit.putBoolean(dataMode, true);
-                                            sendBroadcastToService(ADService.SCAN_MODE);
-                                        } else {
-                                            edit.putBoolean(dataMode, false);
-                                            sendBroadcastToService(ADService.INTERUPE_MODE);
-                                        }
+//                                        if (scanMode.isChecked()) {
+//                                            edit.putBoolean(Constants.dataMode, true);
+//                                            sendBroadcastToService(ADService.SCAN_MODE);
+//                                        } else {
+//                                            edit.putBoolean(Constants.dataMode, false);
+//                                            sendBroadcastToService(ADService.INTERUPE_MODE);
+//                                        }
 
                                         edit.commit();
 
@@ -305,27 +296,28 @@ public class SettingFragment extends Fragment {
                                 }
 
         );
-        measureMode = (RadioGroup) settingLayout.findViewById(R.id.measure_mode);
-        scanMode = (RadioButton) settingLayout.findViewById(R.id.measure_scan);
-        interuptMode = (RadioButton) settingLayout.findViewById(R.id.measure_interupt);
+//        measureMode = (RadioGroup) settingLayout.findViewById(R.id.measure_mode);
+//        scanMode = (RadioButton) settingLayout.findViewById(R.id.measure_scan);
+//        interuptMode = (RadioButton) settingLayout.findViewById(R.id.measure_interupt);
 
-        SharedPreferences setting = getActivity().getSharedPreferences("setting", Activity.MODE_PRIVATE);
+        SharedPreferences setting = getActivity().getSharedPreferences(Constants.SETTINGS, Activity.MODE_PRIVATE);
         if (setting != null) {
-            minScopeEditText.setText(String.valueOf(setting.getFloat(minScope, 0)));
-            maxScopeEditText.setText(String.valueOf(setting.getFloat(maxScope, 0)));
-            sensorScopeEditText.setText(String.valueOf(setting.getFloat(sensorScope, 0)));
-            sensorVelocityEditText.setText(String.valueOf(setting.getFloat(sensorVelocity, 0)));
-            measureDistanceEditText.setText(String.valueOf(setting.getFloat(measureDistance, 0)));
-            sensorZeroEditText.setText(String.valueOf(setting.getFloat(sensorZero, 0)));
-            sensorVoltageScopeEditText.setText(String.valueOf(setting.getFloat(sensorVoltageScope, 0)));
 
+            sensorScopeEditText.setText(String.valueOf(setting.getFloat(Constants.sensorScope, 0)));
+            sensorVelocityEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVelocity, 0)));
+            measureDistanceEditText.setText(String.valueOf(setting.getFloat(Constants.measureDistance, 0)));
+            sensorVoltageMinEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageMin, 0)));
+            sensorVoltageMaxEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageMax, 0)));
 
-            boolean mode = setting.getBoolean(dataMode, true);
-            if (mode) {
-                scanMode.setChecked(true);
-            } else {
-                interuptMode.setChecked(true);
-            }
+            minScopeEditText.setText(String.valueOf(setting.getFloat(Constants.minScope, 0)));
+            maxScopeEditText.setText(String.valueOf(setting.getFloat(Constants.maxScope, 0)));
+//
+//            boolean mode = setting.getBoolean(Constants.dataMode, true);
+//            if (mode) {
+//                scanMode.setChecked(true);
+//            } else {
+//                interuptMode.setChecked(true);
+//            }
         }
 
 
@@ -335,7 +327,7 @@ public class SettingFragment extends Fragment {
     protected void sendBroadcastToService(int state) {
 
         Intent intent = new Intent();
-        intent.setAction(ADService.DEVICE_ACTION);
+        intent.setAction(Constants.DEVICE_ACTION);
         intent.putExtra(ADService.MSG_TYPE, state);
         //向后台Service发送播放控制的广播
         getActivity().sendBroadcast(intent);
@@ -345,13 +337,14 @@ public class SettingFragment extends Fragment {
     protected void sendSensorParameterToService() {
 
         Intent intent = new Intent();
-        intent.setAction(ADService.SETTING_ACTION);
+        intent.setAction(Constants.SETTING_ACTION);
         intent.putExtra(ADService.MSG_TYPE, ADService.SETTING_MODE);
 
-        intent.putExtra(ADService.SENSOR_MAX_SCOPE, sensorScopeValue);
-        intent.putExtra(ADService.SENSOR_VELOCITY, sensorVelocityValue);
-        intent.putExtra(ADService.SENSOR_ZERO_POINT, sensorZeroValue);
-        intent.putExtra(ADService.SENSOR_VOLTAGE_SCOPE, sensorVoltageScopeValue);
+        intent.putExtra(Constants.SENSOR_MAX_SCOPE, sensorScopeValue);
+        intent.putExtra(Constants.SENSOR_VELOCITY, sensorVelocityValue);
+        intent.putExtra(Constants.MEASURE_DISTANCE, measureDistanceValue);
+        intent.putExtra(Constants.SENSOR_VOLTAGE_MIN, sensorVoltageMinValue);
+        intent.putExtra(Constants.SENSOR_VOLTAGE_MAX, sensorVoltageMaxValue);
 
         getActivity().sendBroadcast(intent);
 
@@ -363,13 +356,15 @@ public class SettingFragment extends Fragment {
         super.onResume();
         SharedPreferences setting = getActivity().getSharedPreferences("setting", Activity.MODE_PRIVATE);
         if (setting != null) {
-            minScopeEditText.setText(String.valueOf(setting.getFloat(minScope, 0)));
-            maxScopeEditText.setText(String.valueOf(setting.getFloat(maxScope, 0)));
-            sensorScopeEditText.setText(String.valueOf(setting.getFloat(sensorScope, 0)));
-            sensorVelocityEditText.setText(String.valueOf(setting.getFloat(sensorVelocity, 0)));
-            measureDistanceEditText.setText(String.valueOf(setting.getFloat(measureDistance, 0)));
-            sensorZeroEditText.setText(String.valueOf(setting.getFloat(sensorZero, 0)));
-            sensorVoltageScopeEditText.setText(String.valueOf(setting.getFloat(sensorVoltageScope, 0)));
+
+            sensorScopeEditText.setText(String.valueOf(setting.getFloat(Constants.sensorScope, 0)));
+            sensorVelocityEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVelocity, 0)));
+            measureDistanceEditText.setText(String.valueOf(setting.getFloat(Constants.measureDistance, 0)));
+            sensorVoltageMaxEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageMax, 0)));
+            sensorVoltageMinEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageMin, 0)));
+
+            minScopeEditText.setText(String.valueOf(setting.getFloat(Constants.minScope, 0)));
+            maxScopeEditText.setText(String.valueOf(setting.getFloat(Constants.maxScope, 0)));
         }
     }
 }

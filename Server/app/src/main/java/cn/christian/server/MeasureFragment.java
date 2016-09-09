@@ -26,6 +26,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import cn.christian.server.utils.Constants;
+
 /**
  * Created by Administrator on 2016/9/1.
  */
@@ -37,7 +39,7 @@ public class MeasureFragment extends Fragment {
     private static boolean hide = false;
     private static float minScope;
     private static float maxScope;
-    private static float maxValue;
+    private static float sensorScopeValue;
     private static float maxPoint;
 
 
@@ -170,7 +172,7 @@ public class MeasureFragment extends Fragment {
         super.onCreate(savedInstanceState);
         DataReceiver actionReceiver = new DataReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(ADService.SENSOR_DATA_COMMING);
+        filter.addAction(Constants.SENSOR_DATA_COMMING);
         getActivity().registerReceiver(actionReceiver, filter);
     }
 
@@ -242,25 +244,52 @@ public class MeasureFragment extends Fragment {
     private static void addEntrys(float[] distance, boolean hide) {
 
         LineData data = mChart.getData();
-        LineDataSet set = data.getDataSetByIndex(0);
-        if (set == null) {
-            set = createLineDataSet();
-            data.addDataSet(set);
+        if (data != null) {
+            data.removeDataSet(0);
+            mChart.notifyDataSetChanged();
+            mChart.invalidate();
         }
+
+        LineDataSet set = createLineDataSet();
+        data.addDataSet(set);
+
+//        LineDataSet set = data.getDataSetByIndex(0);
+//        if (set == null) {
+//            set = createLineDataSet();
+//            data.addDataSet(set);
+//        }
 
         int entrynum = set.getEntryCount();
-        for (int i = 0; i < entrynum; i++) {
-            set.removeLast();
-        }
+        int xValueCount = data.getXValCount();
+        Log.d("MEASURE", "before remove getXValCount: " + xValueCount);
+        Log.d("MEASURE", "before remove data count: " + entrynum);
+//        for (int i = 0; i < xValueCount; i++) {
+//            data.removeXValue(i);
+////            set.removeLast();
+//        }
+
+        entrynum = set.getEntryCount();
+
+        Log.d("MEASURE", "after remove getXValCount: " + data.getXValCount());
+        Log.d("MEASURE", "after remove data count: " + entrynum);
 
         mChart.notifyDataSetChanged();
+//        mChart.invalidate();
+
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < distance.length; i++) {
             sb.append(distance[i]).append(",");
             Entry entry = new Entry(distance[i], set.getEntryCount());
-            data.addXValue(i + "");
+            if (xValueCount == 0) {
+                data.addXValue(i + "");
+            }
             data.addEntry(entry, 0);
         }
+
+        xValueCount = data.getXValCount();
+        entrynum = set.getEntryCount();
+        Log.d("MEASURE", "current getXValCount: " + xValueCount);
+        Log.d("MEASURE", "current data count: " + entrynum);
 
         Log.d("MEASURE", "data: " + sb.toString());
 
@@ -287,9 +316,9 @@ public class MeasureFragment extends Fragment {
         // 将坐标移动到最新
         // 此代码将刷新图表的绘图
         if (!hide) {
-//            mChart.moveViewToX(0);
+            mChart.moveViewToX(0);
 //            mChart.moveViewToX(data.getXValCount() - 5);
-            mChart.invalidate();
+//            mChart.invalidate();
         }
 
 //        mChart.moveViewToX(data.getXValCount() - 5);
@@ -327,7 +356,7 @@ public class MeasureFragment extends Fragment {
         set.setDrawCubic(true);
         // 默认是直线
         // 曲线的平滑度，值越大越平滑。
-        set.setCubicIntensity(0.2f);
+        set.setCubicIntensity(0.1f);
 
         set.setValueFormatter(new MyValueFormatter());
 
@@ -341,9 +370,10 @@ public class MeasureFragment extends Fragment {
         hide = hidden;
         SharedPreferences setting = getActivity().getSharedPreferences("setting", Activity.MODE_PRIVATE);
         if (setting != null) {
-            minScope = setting.getFloat(SettingFragment.minScope, 0);
-            maxScope = setting.getFloat(SettingFragment.maxScope, 0);
-            maxValue = setting.getFloat(SettingFragment.sensorScope, 0);
+            minScope = setting.getFloat(Constants.minScope, 0);
+            maxScope = setting.getFloat(Constants.maxScope, 0);
+
+            sensorScopeValue = setting.getFloat(Constants.sensorScope, 0);
 
             YAxis leftAxis = mChart.getAxisLeft();
             // 最大值
@@ -360,9 +390,9 @@ public class MeasureFragment extends Fragment {
         super.onResume();
         SharedPreferences setting = getActivity().getSharedPreferences("setting", Activity.MODE_PRIVATE);
         if (setting != null) {
-            minScope = setting.getFloat(SettingFragment.minScope, 0);
-            maxScope = setting.getFloat(SettingFragment.maxScope, 0);
-            maxValue = setting.getFloat(SettingFragment.sensorScope, 0);
+            minScope = setting.getFloat(Constants.minScope, 0);
+            maxScope = setting.getFloat(Constants.maxScope, 0);
+//            sensorScopeValue = setting.getFloat(SettingFragment.sensorScope, 0);
 
             YAxis leftAxis = mChart.getAxisLeft();
             // 最大值
@@ -377,7 +407,7 @@ public class MeasureFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            float[] distances = intent.getFloatArrayExtra(ADService.SENSOR_DATA);
+            float[] distances = intent.getFloatArrayExtra(Constants.SENSOR_DATA);
             Log.d("MEASURE", "DATA RECEIVED !!! length = " + distances.length);
             Log.d("MEASURE", "DATA: " + distances.toString());
             addEntrys(distances, hide);
