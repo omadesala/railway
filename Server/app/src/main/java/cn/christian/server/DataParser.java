@@ -5,8 +5,11 @@ import android.util.Log;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import cn.christian.server.utils.Constants;
 
 /**
  * Created by Administrator on 2016/8/28.
@@ -14,11 +17,17 @@ import java.util.List;
 public class DataParser {
 
 
-    private float scope = 10;
-    private float resolution = 4096;
-    private float epslon = 0.01f;
-    private float needNumber = 250;
-    private float baseVoltage = 0.0f;
+    private static float scope = 10;
+    private static float resolution = 4096;
+    private static float epslon = 0.01f;
+    private static float needNumber = 250;
+    private static float baseVoltage = 0.0f;
+    private static float basePosition = .0f;
+    private static float baseVoltageSup = 0.0f;
+    private static float baseVoltageDelta = 0.85f;// 5(+-) 0.85
+    private static int baseVoltagePromote = 0; // 如果基准位置过高，每10秒提示一次
+
+    private boolean baseConfirm = false;
 
 
     private List<Float> voltageDatas = Lists.newArrayList();// 确认保留或者放弃后清空该数据
@@ -29,21 +38,54 @@ public class DataParser {
         needNumber = dataLength;
     }
 
+    public boolean isBaseConfirm() {
+        return baseConfirm;
+    }
+
+    public void setBaseConfirm(boolean baseConfirm) {
+        this.baseConfirm = baseConfirm;
+    }
+
+
+    public float getSensorBasePosition() {
+        basePosition = getDistanceFromVoltage(baseVoltage);
+        return basePosition;
+    }
 
     public float[] getValidateData(String record) {
 
         Float[] voltage = getVoltage(record);
         Float dValue = getDValue(voltage);
         Float avg = getAverage(voltage);
+        Log.d("Parser", "avg: " + avg + "  d-value: " + dValue);
+
 
         int size = voltageDatas.size();
-
-        if (dValue < epslon && avg < epslon) {
-            Log.d("Parser", "测量未开始，丢弃0数据");
+        baseVoltage = avg;
+        if (dValue < 2 * epslon && avg < epslon) {// 数据平均值等于0，数据无波动
+            Log.d("Parser", "传感器未上电工作，丢弃0数据");
             dataEnd = false;
             voltageDatas.clear();
             return null;
-        } else if (size < needNumber) { // measuring ...
+        }
+
+        if (dValue < 5 * epslon && avg > 10 * epslon) { // 数据平均值大于0，数据无波动
+
+            Log.d("Parser", "传感器未移动，丢弃数据 ");
+            dataEnd = false;
+            voltageDatas.clear();
+            return null;
+        }
+
+//        if (!baseConfirm && getDistanceFromVoltage(new Float(baseVoltage)) < 0.1f || getDistanceFromVoltage(new Float(baseVoltage)) > 0.1f) { // 基准位置超过设定限制
+//            Log.d("Parser", "基准位置超限，请校对");
+//            dataEnd = false;
+//            voltageDatas.clear();
+//            return null;
+//        }
+
+        // 波动数据为移动传感器的测量数据
+        if (size < needNumber) { // measuring ...
             for (int i = 0; i < voltage.length; i++) {
                 voltageDatas.add(voltage[i]);
             }
@@ -51,17 +93,41 @@ public class DataParser {
             return null;
         } else {
             if (dataEnd) {
-                Log.d("Parser", "测量已经完成，丢弃0数据");
+                Log.d("Parser", "测量已经完成，丢弃数据");
                 return null;
             }
         }
 
 
-        Log.d("Parser", "get enough data");
+        Log.d("Parser", "测量已经完成");
         dataEnd = true;
         Float validateData[] = new Float[size];
-        float[] dis = getDistanceFromVoltage(voltageDatas.toArray(validateData));
+        Float[] validVoltage = getValidVoltage(voltageDatas.toArray(validateData));
+        float[] dis = getDistanceFromVoltage(validVoltage);
         return dis;
+    }
+
+    public static Float[] getValidVoltage(Float[] voltage) {
+
+        List<Float> validVoltage = Lists.newArrayList();
+        for (int i = 0; i < voltage.length; i++) {
+
+            Float volt = (voltage[i] - baseVoltage);
+//            if (volt < epslon) {
+//                continue;
+//            }
+            validVoltage.add(volt);
+        }
+        int dataLen = validVoltage.size();
+        Float ret[] = new Float[dataLen];
+        return validVoltage.toArray(ret);
+    }
+
+
+    public static Float getMidNumber(Float[] datas) {
+
+        Arrays.sort(datas);   // 数组从小到大排序
+        return datas[datas.length / 2]; // 找出排序后中间的数组值
     }
 
     public Float getAverage(Float voltage[]) {
@@ -99,7 +165,7 @@ public class DataParser {
         if (record == null || record.isEmpty()) {
             throw new IllegalArgumentException("no record received ...");
         }
-        Log.i("Parser", "record: " + record);
+//        Log.i("Parser", "record: " + record);
 
         Iterable<String> result = Splitter.on(',')
                 .split(record);
@@ -122,22 +188,29 @@ public class DataParser {
             sb.append(voltages[i]).append(",");
         }
 
-        Log.d("Parser", "voltage is: " + sb.toString());
+//        Log.d("Parser", "voltage is: " + sb.toString());
         return voltages;
     }
 
 
     public float[] getDistanceFromVoltage(Float voltage[]) {
 
-        Log.d("Parser", "get dist from voltage");
+//        Log.d("Parser", "get dist from voltage");
         int datalength = voltage.length;
         float[] distancemm = new float[datalength];
-        StringBuffer sb = new StringBuffer();
+//        StringBuffer sb = new StringBuffer();
         for (int i = 0; i < datalength; i++) {
-            distancemm[i] = (float) ((voltage[i] / ADService.micronVoltage) / 1000.0 + 2);
-            sb.append(distancemm[i]).append(",");
+            distancemm[i] = (float) ((voltage[i] / ADService.micronVoltage) / 1000.0);
+//            sb.append(distancemm[i]).append(",");
         }
-        Log.d("Parser", "distancemm is: " + sb.toString());
+        return distancemm;
+    }
+
+    public float getDistanceFromVoltage(Float voltage) {
+
+//        Log.d("Parser", "get dist from voltage");
+        float distancemm = .0f;
+        distancemm = (((voltage - 5) / ADService.micronVoltage) / 1000.0f);
         return distancemm;
     }
 

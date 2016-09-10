@@ -258,13 +258,13 @@ public class SettingFragment extends Fragment {
 
 
                                         minScopeValue = Float.parseFloat(minScopeStr);
-                                        if (minScopeValue < 0) {
-                                            showDialog("错误提示", "显示下限不能小于0");
-                                            return;
-                                        }
+//                                        if (minScopeValue < 0) {
+//                                            showDialog("错误提示", "显示下限不能小于0");
+//                                            return;
+//                                        }
                                         maxScopeValue = Float.parseFloat(maxScopeStr);
-                                        if (maxScopeValue < 0 || minScopeValue > maxScopeValue) {
-                                            showDialog("错误提示", "显示上限小于0或者小于下限");
+                                        if (minScopeValue > maxScopeValue) {
+                                            showDialog("错误提示", "显示上限小于下限");
                                             return;
                                         }
 
@@ -328,7 +328,7 @@ public class SettingFragment extends Fragment {
 
         Intent intent = new Intent();
         intent.setAction(Constants.DEVICE_ACTION);
-        intent.putExtra(ADService.MSG_TYPE, state);
+        intent.putExtra(Constants.MSG_TYPE, state);
         //向后台Service发送播放控制的广播
         getActivity().sendBroadcast(intent);
 
@@ -338,7 +338,7 @@ public class SettingFragment extends Fragment {
 
         Intent intent = new Intent();
         intent.setAction(Constants.SETTING_ACTION);
-        intent.putExtra(ADService.MSG_TYPE, ADService.SETTING_MODE);
+        intent.putExtra(Constants.MSG_TYPE, Constants.SETTING_MODE);
 
         intent.putExtra(Constants.SENSOR_MAX_SCOPE, sensorScopeValue);
         intent.putExtra(Constants.SENSOR_VELOCITY, sensorVelocityValue);

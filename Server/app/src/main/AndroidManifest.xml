@@ -11,7 +11,9 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
-    <application android:icon="@drawable/industrial_robot_sh">
+    <application
+        android:name=".application.RailWayApp"
+        android:icon="@drawable/industrial_robot_sh">
         <activity
             android:name="MainActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -21,6 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".HistoryDataActivity" />
+
+
         <service
             android:name=".ADService"
             android:exported="false" />

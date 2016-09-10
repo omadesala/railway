@@ -7,37 +7,27 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TabHost;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LimitLine;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.DecimalFormat;
+
+import cn.christian.server.utils.SQLiteHelper;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
     private MeasureFragment measureFragment;
     private HistoryFragment historyFragment;
-    private StatFragment statFragment;
+    private SensorPositionFragment sensorPositionFragment;
     private SettingFragment settingFragment;
 
     private View measureLayout;
@@ -57,6 +47,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private TextView settingText;
 
     private FragmentManager fragmentManager;
+
+
 
     private void initViews() {
 
@@ -99,6 +91,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         fragmentManager = getFragmentManager();
         // 第一次启动时选中第0个tab
         setTabSelection(0);
+
+
 
     }
 
@@ -185,13 +179,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 statImage.setImageResource(R.drawable.statistics);
                 statImage.setBackgroundColor(getResources().getColor(R.color.goldenrod));
                 statText.setTextColor(Color.WHITE);
-                if (statFragment == null) {
+                if (sensorPositionFragment == null) {
                     // 如果NewsFragment为空，则创建一个并添加到界面上
-                    statFragment = new StatFragment();
-                    transaction.add(R.id.content, statFragment);
+                    sensorPositionFragment = new SensorPositionFragment();
+                    transaction.add(R.id.content, sensorPositionFragment);
                 } else {
                     // 如果NewsFragment不为空，则直接将它显示出来
-                    transaction.show(statFragment);
+                    transaction.show(sensorPositionFragment);
                 }
                 break;
             case 3:
@@ -243,8 +237,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if (historyFragment != null) {
             transaction.hide(historyFragment);
         }
-        if (statFragment != null) {
-            transaction.hide(statFragment);
+        if (sensorPositionFragment != null) {
+            transaction.hide(sensorPositionFragment);
         }
         if (settingFragment != null) {
             transaction.hide(settingFragment);

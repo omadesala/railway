@@ -2,9 +2,11 @@ package cn.christian.server;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -15,6 +17,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
@@ -25,7 +29,14 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.common.base.Joiner;
 
+import java.security.Timestamp;
+import java.util.Arrays;
+import java.util.Date;
+
+import cn.christian.server.application.RailWayApp;
+import cn.christian.server.dao.Record;
 import cn.christian.server.utils.Constants;
 
 /**
@@ -173,12 +184,21 @@ public class MeasureFragment extends Fragment {
         DataReceiver actionReceiver = new DataReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.SENSOR_DATA_COMMING);
+        filter.addAction(Constants.SENSOR_BASE_POSITION_NOTCORRUCET);
         getActivity().registerReceiver(actionReceiver, filter);
+
+        SharedPreferences setting = getActivity().getSharedPreferences("setting", Activity.MODE_PRIVATE);
+        if (setting != null) {
+            minScope = setting.getFloat(Constants.minScope, 0);
+            maxScope = setting.getFloat(Constants.maxScope, 0);
+            sensorScopeValue = setting.getFloat(Constants.sensorScope, 0);
+        }
     }
 
 
     // 添加进去一个坐标点
     private static void addEntry(double voltage, boolean hide) {
+
 
         LineData data = mChart.getData();
 
@@ -243,12 +263,20 @@ public class MeasureFragment extends Fragment {
     // 添加进去一个坐标点
     private static void addEntrys(float[] distance, boolean hide) {
 
-        LineData data = mChart.getData();
-        if (data != null) {
-            data.removeDataSet(0);
-            mChart.notifyDataSetChanged();
-            mChart.invalidate();
-        }
+
+        LineData data = new LineData();
+
+        // 数据显示的颜色
+        data.setValueTextColor(Color.WHITE);
+
+        mChart.setData(data);
+
+//        LineData data = mChart.getData();
+//        if (data != null) {
+//            data.removeDataSet(0);
+//            mChart.notifyDataSetChanged();
+//            mChart.invalidate();
+//        }
 
         LineDataSet set = createLineDataSet();
         data.addDataSet(set);
@@ -280,9 +308,10 @@ public class MeasureFragment extends Fragment {
         for (int i = 0; i < distance.length; i++) {
             sb.append(distance[i]).append(",");
             Entry entry = new Entry(distance[i], set.getEntryCount());
-            if (xValueCount == 0) {
-                data.addXValue(i + "");
-            }
+//            if (xValueCount == 0) {
+//                data.addXValue(i + "");
+//            }
+            data.addXValue(i + "");
             data.addEntry(entry, 0);
         }
 
@@ -407,10 +436,51 @@ public class MeasureFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            float[] distances = intent.getFloatArrayExtra(Constants.SENSOR_DATA);
-            Log.d("MEASURE", "DATA RECEIVED !!! length = " + distances.length);
-            Log.d("MEASURE", "DATA: " + distances.toString());
-            addEntrys(distances, hide);
+
+            String action = intent.getAction();
+            if (action.equals(Constants.SENSOR_DATA_COMMING)) {
+                float[] distances = intent.getFloatArrayExtra(Constants.SENSOR_DATA);
+                if (distances != null) {
+                    Log.d("MEASURE", "DATA RECEIVED !!! length = " + distances.length);
+                    Log.d("MEASURE", "DATA: " + distances.toString());
+                    addEntrys(distances, hide);
+
+
+                    final EditText code = new EditText(getActivity());
+                    final String dataStr = Joiner.on(",").join(Arrays.asList(distances));
+
+                    new AlertDialog.Builder(getActivity()).setTitle("请输入编号").setIcon(android.R.drawable.ic_dialog_info).setView(code).setMessage("日期编号").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            Record item = new Record();
+                            item.setCode(code.getText().toString());
+                            item.setData(dataStr);
+                            item.setCreatedate(new Date().getTime());
+                            RailWayApp.getSqlite().addRecord(item);
+                            Log.d("MEASURE_PAGE", "record has been saved !!!");
+
+                        }
+                    }).setNegativeButton("取消", null).show();
+                }
+            }
+            if (action.equals(Constants.SENSOR_BASE_POSITION_NOTCORRUCET)) {
+                String high = intent.getStringExtra(Constants.BASE_POSITION_TOO_HIGH);
+                String low = intent.getStringExtra(Constants.BASE_POSITION_TOO_LOW);
+                if (high != null) {
+                    Toast.makeText(
+                            getActivity(),
+                            "传感器探头基准位置过高", Toast.LENGTH_LONG).
+                            show();
+                }
+                if (low != null) {
+                    Toast.makeText(
+                            getActivity(),
+                            "传感器探头基准位置过低", Toast.LENGTH_LONG).
+                            show();
+                }
+            }
+
         }
     }
 }

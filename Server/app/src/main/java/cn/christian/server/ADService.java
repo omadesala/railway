@@ -32,14 +32,8 @@ public class ADService extends Service {
     private static WifiManager wifi;
     private boolean running = false;
 
-    public static final int SCAN_MODE = 0;
-    public static final int INTERUPE_MODE = 2;
-    public static final int SETTING_MODE = 3;
-    public static final int MSG_DISTANCE = 4;
-    public static final String MSG_TYPE = "MSG_TYPE";
 
-
-    private int curMode = SCAN_MODE;
+//    private int curMode = SCAN_MODE;
 
     public static float sensorScopevalue = 0;
     public static float sensorVelocityvalue = 0;
@@ -85,6 +79,7 @@ public class ADService extends Service {
         ActionReceiver actionReceiver = new ActionReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.DEVICE_ACTION);
+        filter.addAction(Constants.SENSOR_POSITION_CHECK);
         registerReceiver(actionReceiver, filter);
 
 
@@ -258,6 +253,7 @@ public class ADService extends Service {
         private Socket connectedSocket;
         private int connIndex;
 
+        static public DataParser dataParser;
 
         public ConnectionHandle(Context ctx, Socket incoming, int connIdx) {
             mContext = ctx;
@@ -288,7 +284,8 @@ public class ADService extends Service {
 
                     StringBuffer sb = new StringBuffer();
 
-                    DataParser dataParser = new DataParser(dataCount);
+
+                    dataParser = new DataParser(dataCount);
 
                     while (!done && in.hasNext()) {
 
@@ -296,28 +293,47 @@ public class ADService extends Service {
 //                        Log.e(TAG, token);
 
                         if (token.startsWith(Constants.SENSOR_DATA_START_TAG)) {
-                            Log.d("ADService", " a record start");
+//                            Log.d("ADService", " a record start");
                             sb = new StringBuffer();
                         }
                         sb.append(token);
 
                         if (token.endsWith("EEFF")) {
                             String record = sb.toString();
-                            Log.d("ADService", "received a record " + record);
+//                            Log.d("ADService", "received a record " + record);
 //                            float voltage = dataParser.chanel0Voltage(record);
                             try {
                                 float[] distance = dataParser.getValidateData(record);
-                                if (distance != null) {
-                                    Log.d("ADService", "data length is: " + distance.length);
-                                    Log.d("ADService", "data is: " + distance.toString());
+                                if (!dataParser.isBaseConfirm()) {
+                                    Intent intentPosition = new Intent();
+                                    intentPosition.setAction(Constants.SENSOR_POSITION_CHECK_ACTION);
+                                    intentPosition.putExtra(Constants.SENSOR_POSITION_DATA, dataParser.getSensorBasePosition());
+                                    mContext.sendBroadcast(intentPosition);
+                                } else if (distance != null) {
+//                                    Log.d("ADService", "data length is: " + distance.length);
+//                                    Log.d("ADService", "data is: " + distance.toString());
                                     Intent intent = new Intent();
                                     intent.setAction(Constants.SENSOR_DATA_COMMING);
                                     intent.putExtra(Constants.SENSOR_DATA, distance);
                                     mContext.sendBroadcast(intent);
+
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 Log.e("ADService", e.getMessage());
+
+//                                if (e.getMessage().equals(Constants.BASE_POSITION_TOO_HIGH)) {
+//                                    Intent intent = new Intent();
+//                                    intent.setAction(Constants.SENSOR_BASE_POSITION_NOTCORRUCET);
+//                                    intent.putExtra(Constants.BASE_POSITION_TOO_HIGH, Constants.BASE_POSITION_TOO_HIGH);
+//                                    mContext.sendBroadcast(intent);
+//                                }
+//                                if (e.getMessage().equals(Constants.BASE_POSITION_TOO_LOW)) {
+//                                    Intent intent = new Intent();
+//                                    intent.setAction(Constants.SENSOR_BASE_POSITION_NOTCORRUCET);
+//                                    intent.putExtra(Constants.BASE_POSITION_TOO_LOW, Constants.BASE_POSITION_TOO_LOW);
+//                                    mContext.sendBroadcast(intent);
+//                                }
                             }
                         }
                     }
@@ -360,42 +376,50 @@ public class ADService extends Service {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            int type = intent.getIntExtra(MSG_TYPE, -1);
-            switch (type) {
-                case SCAN_MODE:
-                    if (curMode != SCAN_MODE) {
-                        curMode = SCAN_MODE;
-                        // SEND SCAN_MODE CMD TO DEVICE
-                        SendActionHandle.sendCmd(SCAN_MODE);
-                    }
-                    break;
-                case INTERUPE_MODE:
-                    if (curMode != INTERUPE_MODE) {
-                        curMode = INTERUPE_MODE;
-                        // SEND INTERUPE_MODE CMD TO DEVICE
-                        // SendActionHandle.sendCmd(INTERUPE_MODE);
-                    }
+            String action = intent.getAction();
+            if (action.equals(Constants.SENSOR_POSITION_CHECK)) {
+                boolean status = intent.getBooleanExtra(Constants.SENSOR_POSITION_CHECK, false);
+                ConnectionHandle.dataParser.setBaseConfirm(status);
+                Log.d("ADService", "停止位置校准 " + status);
+            } else {
 
-                    break;
+                int type = intent.getIntExtra(Constants.MSG_TYPE, -1);
+                switch (type) {
+//                case SCAN_MODE:
+//                    if (curMode != SCAN_MODE) {
+//                        curMode = SCAN_MODE;
+//                        // SEND SCAN_MODE CMD TO DEVICE
+//                        SendActionHandle.sendCmd(SCAN_MODE);
+//                    }
+//                    break;
+//                case INTERUPE_MODE:
+//                    if (curMode != INTERUPE_MODE) {
+//                        curMode = INTERUPE_MODE;
+//                        // SEND INTERUPE_MODE CMD TO DEVICE
+//                        // SendActionHandle.sendCmd(INTERUPE_MODE);
+//                    }
+//
+//                    break;
 
-                case SETTING_MODE:
+                    case Constants.SETTING_MODE:
 
-                    sensorScopevalue = intent.getFloatExtra(Constants.SENSOR_MAX_SCOPE, 0);
-                    sensorVelocityvalue = intent.getFloatExtra(Constants.SENSOR_VELOCITY, 0);
-                    measureDistance = intent.getFloatExtra(Constants.MEASURE_DISTANCE, 0);
-                    sensorVoltateMaxvalue = intent.getFloatExtra(Constants.SENSOR_VOLTAGE_MAX, 0);
-                    sensorVoltateMinvalue = intent.getFloatExtra(Constants.SENSOR_VOLTAGE_MIN, 0);
+                        sensorScopevalue = intent.getFloatExtra(Constants.SENSOR_MAX_SCOPE, 0);
+                        sensorVelocityvalue = intent.getFloatExtra(Constants.SENSOR_VELOCITY, 0);
+                        measureDistance = intent.getFloatExtra(Constants.MEASURE_DISTANCE, 0);
+                        sensorVoltateMaxvalue = intent.getFloatExtra(Constants.SENSOR_VOLTAGE_MAX, 0);
+                        sensorVoltateMinvalue = intent.getFloatExtra(Constants.SENSOR_VOLTAGE_MIN, 0);
 
-                    float sensorVoltateScopevalue = sensorVoltateMaxvalue - sensorVoltateMinvalue;
-                    if (sensorVoltateScopevalue > 0 && sensorScopevalue > 0) {
-                        micronVoltage = sensorVoltateScopevalue / (sensorScopevalue * 1000);
-                    }
+                        float sensorVoltateScopevalue = sensorVoltateMaxvalue - sensorVoltateMinvalue;
+                        if (sensorVoltateScopevalue > 0 && sensorScopevalue > 0) {
+                            micronVoltage = sensorVoltateScopevalue / (sensorScopevalue * 1000);
+                        }
 
-                    break;
+                        break;
 
-                default:
-                    Log.d("ADservice", "mode error");
-                    break;
+                    default:
+                        Log.d("ADservice", "mode error");
+                        break;
+                }
             }
         }
     }
