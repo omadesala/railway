@@ -30,10 +30,12 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 
 import java.security.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import cn.christian.server.application.RailWayApp;
 import cn.christian.server.dao.Record;
@@ -445,9 +447,14 @@ public class MeasureFragment extends Fragment {
                     Log.d("MEASURE", "DATA: " + distances.toString());
                     addEntrys(distances, hide);
 
+                    List<Float> data = Lists.newArrayList();
+                    for (int i = 0; i < distances.length; i++) {
+                        data.add(distances[i]);
+                    }
 
                     final EditText code = new EditText(getActivity());
-                    final String dataStr = Joiner.on(",").join(Arrays.asList(distances));
+                    final String dataStr = Joiner.on(",").join(data);
+                    Log.d("DISTANCE", dataStr);
 
                     new AlertDialog.Builder(getActivity()).setTitle("请输入编号").setIcon(android.R.drawable.ic_dialog_info).setView(code).setMessage("日期编号").setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
@@ -455,7 +462,9 @@ public class MeasureFragment extends Fragment {
 
                             Record item = new Record();
                             item.setCode(code.getText().toString());
-                            item.setData(dataStr);
+                            Log.d("DISTANCE SAVE", dataStr);
+                            Log.d("DISTANCE SAVE2", dataStr.toString());
+                            item.setData(dataStr.toString());
                             item.setCreatedate(new Date().getTime());
                             RailWayApp.getSqlite().addRecord(item);
                             Log.d("MEASURE_PAGE", "record has been saved !!!");

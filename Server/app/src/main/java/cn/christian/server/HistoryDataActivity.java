@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.YAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import java.util.Arrays;
@@ -41,41 +42,46 @@ public class HistoryDataActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.historydata);
         initView();
 
         Intent intent = getIntent();
         int dataid = intent.getIntExtra(Constants.SENSOR_HISTORY_DATA, -1);
 
+//        RailWayApp.getSqlite().deleteAllRecord();
         Record recordById = RailWayApp.getSqlite().getRecordById(dataid);
 
-        String data = recordById.getData();
-        Iterable<String> split = Splitter.on(",").split(data);
+        if (recordById != null) {
+            String data = recordById.getData();
+            if (!Strings.isNullOrEmpty(data)) {
 
-        Iterator<String> iterator = split.iterator();
-        List<Float> datas = Lists.newArrayList();
+                Iterable<String> split = Splitter.on(",").split(data);
 
-        while (iterator.hasNext()) {
-            String item = iterator.next();
-            float v = Float.parseFloat(item);
-            datas.add(v);
+                Iterator<String> iterator = split.iterator();
+                List<Float> datas = Lists.newArrayList();
+
+                while (iterator.hasNext()) {
+                    String item = iterator.next();
+                    float v = Float.parseFloat(item);
+                    datas.add(v);
+                }
+
+
+                float[] dis = new float[datas.size()];
+
+                for (int i = 0; i < datas.size(); i++) {
+                    dis[i] = datas.get(i);
+                }
+
+                addEntrys(dis, false);
+            }
         }
-
-
-        float[] dis = new float[datas.size()];
-
-        for (int i = 0; i < datas.size(); i++) {
-            dis[i] = datas.get(i);
-        }
-
-        addEntrys(dis, false);
-
     }
 
     private void initView() {
 
-        back = (ImageButton) findViewById(R.id.back);
         mChart = (LineChart) findViewById(R.id.chart_history);
+        back = (ImageButton) findViewById(R.id.detail_exit);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,31 +97,38 @@ public class HistoryDataActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
         Intent intent = getIntent();
         int dataid = intent.getIntExtra(Constants.SENSOR_HISTORY_DATA, -1);
 
+//        RailWayApp.getSqlite().deleteAllRecord();
         Record recordById = RailWayApp.getSqlite().getRecordById(dataid);
 
-        String data = recordById.getData();
-        Iterable<String> split = Splitter.on(",").split(data);
+        if (recordById != null) {
+            String data = recordById.getData();
+            if (!Strings.isNullOrEmpty(data)) {
 
-        Iterator<String> iterator = split.iterator();
-        List<Float> datas = Lists.newArrayList();
+                Iterable<String> split = Splitter.on(",").split(data);
 
-        while (iterator.hasNext()) {
-            String item = iterator.next();
-            float v = Float.parseFloat(item);
-            datas.add(v);
+                Iterator<String> iterator = split.iterator();
+                List<Float> datas = Lists.newArrayList();
+
+                while (iterator.hasNext()) {
+                    String item = iterator.next();
+                    float v = Float.parseFloat(item);
+                    datas.add(v);
+                }
+
+
+                float[] dis = new float[datas.size()];
+
+                for (int i = 0; i < datas.size(); i++) {
+                    dis[i] = datas.get(i);
+                }
+
+                addEntrys(dis, false);
+            }
         }
-
-
-        float[] dis = new float[datas.size()];
-
-        for (int i = 0; i < datas.size(); i++) {
-            dis[i] = datas.get(i);
-        }
-
-        addEntrys(dis, false);
     }
 
     private void initLineChart() {

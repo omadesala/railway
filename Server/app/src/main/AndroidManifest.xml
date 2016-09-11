@@ -13,7 +13,8 @@
 
     <application
         android:name=".application.RailWayApp"
-        android:icon="@drawable/industrial_robot_sh">
+        android:icon="@drawable/industrial_robot_sh"
+        android:theme="@style/AppBaseTheme">
         <activity
             android:name="MainActivity"
             android:configChanges="orientation|keyboardHidden"

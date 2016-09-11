@@ -88,12 +88,16 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Record> getRecordByPeriod(Date begin, Date end) {
+    public List<Record> getRecordByDate(Date date) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        Cursor cursor = db.rawQuery("select * from record where createdate >=? and createdate<=?", new String[]{String.valueOf(begin.getTime()), String.valueOf(end.getTime())});
+        Cursor cursor = db.rawQuery("select * from record where createdate =? ", new String[]{String.valueOf(date.getTime())});
         List<Record> rets = Lists.newArrayList();
         cursor.moveToFirst();
+
+        if (cursor.getCount() == 0) {
+            return rets;
+        }
 
         do {
             Record item = new Record();
@@ -120,12 +124,23 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         return item;
     }
 
+    public void deleteAllRecord() {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from record");
+
+    }
+
+
     public List<Record> getAllRecord() {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor cursor = db.rawQuery("select * from record ", null);
         List<Record> rets = Lists.newArrayList();
 
+        if (cursor.getCount() == 0) {
+            return rets;
+        }
         cursor.moveToFirst();
         do {
             Record item = new Record();
