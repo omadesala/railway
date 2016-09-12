@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import cn.christian.server.utils.Constants;
+import cn.christian.server.utils.DataUtil;
 
 /**
  * Created by Administrator on 2016/8/28.
@@ -23,9 +24,6 @@ public class DataParser {
     private static float needNumber = 250;
     private static float baseVoltage = 0.0f;
     private static float basePosition = .0f;
-    private static float baseVoltageSup = 0.0f;
-    private static float baseVoltageDelta = 0.85f;// 5(+-) 0.85
-    private static int baseVoltagePromote = 0; // 如果基准位置过高，每10秒提示一次
 
     private boolean baseConfirm = false;
 
@@ -55,7 +53,7 @@ public class DataParser {
     public float[] getValidateData(String record) {
 
         Float[] voltage = getVoltage(record);
-        Float dValue = getDValue(voltage);
+        Float dValue = DataUtil.getDValue(voltage);
         Float avg = getAverage(voltage);
         Log.d("Parser", "avg: " + avg + "  d-value: " + dValue);
 
@@ -76,13 +74,6 @@ public class DataParser {
             voltageDatas.clear();
             return null;
         }
-
-//        if (!baseConfirm && getDistanceFromVoltage(new Float(baseVoltage)) < 0.1f || getDistanceFromVoltage(new Float(baseVoltage)) > 0.1f) { // 基准位置超过设定限制
-//            Log.d("Parser", "基准位置超限，请校对");
-//            dataEnd = false;
-//            voltageDatas.clear();
-//            return null;
-//        }
 
         // 波动数据为移动传感器的测量数据
         if (size < needNumber) { // measuring ...
@@ -111,23 +102,12 @@ public class DataParser {
 
         List<Float> validVoltage = Lists.newArrayList();
         for (int i = 0; i < voltage.length; i++) {
-
             Float volt = (voltage[i] - baseVoltage);
-//            if (volt < epslon) {
-//                continue;
-//            }
             validVoltage.add(volt);
         }
         int dataLen = validVoltage.size();
         Float ret[] = new Float[dataLen];
         return validVoltage.toArray(ret);
-    }
-
-
-    public static Float getMidNumber(Float[] datas) {
-
-        Arrays.sort(datas);   // 数组从小到大排序
-        return datas[datas.length / 2]; // 找出排序后中间的数组值
     }
 
     public Float getAverage(Float voltage[]) {
@@ -195,13 +175,10 @@ public class DataParser {
 
     public float[] getDistanceFromVoltage(Float voltage[]) {
 
-//        Log.d("Parser", "get dist from voltage");
         int datalength = voltage.length;
         float[] distancemm = new float[datalength];
-//        StringBuffer sb = new StringBuffer();
         for (int i = 0; i < datalength; i++) {
-            distancemm[i] = (float) ((voltage[i] / ADService.micronVoltage) / 1000.0);
-//            sb.append(distancemm[i]).append(",");
+            distancemm[i] = ((voltage[i] / ADService.micronVoltage) / 1000.0f);
         }
         return distancemm;
     }
@@ -214,41 +191,5 @@ public class DataParser {
         return distancemm;
     }
 
-    public static Float getDValue(Float[] datas) {
-
-        Float max = Float.MIN_VALUE;
-        Float min = Float.MAX_VALUE;
-        for (int i = 0; i < datas.length; i++) {
-            if (datas[i] > max) {
-                max = datas[i];
-            }
-            if (datas[i] < min) {
-                min = datas[i];
-            }
-
-        }
-        return max - min;
-
-    }
-
-    public static Float getMax(Float[] datas) {
-        Float max = Float.MIN_VALUE;
-        for (int i = 0; i < datas.length; i++) {
-            if (datas[i] > max) {
-                max = datas[i];
-            }
-        }
-        return max;
-    }
-
-    public static Float getMin(Float[] datas) {
-        Float min = Float.MAX_VALUE;
-        for (int i = 0; i < datas.length; i++) {
-            if (datas[i] < min) {
-                min = datas[i];
-            }
-        }
-        return min;
-    }
 
 }

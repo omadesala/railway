@@ -39,7 +39,7 @@ public class HistoryFragment extends Fragment {
     private int[] dataids;
     private List<Record> record;
     private Button datePicker;
-    private TextView dateScopeText;
+//    private TextView dateScopeText;
     private Calendar cal;
     private int year, month, day;
 
@@ -49,7 +49,7 @@ public class HistoryFragment extends Fragment {
         View historyLayout = inflater.inflate(R.layout.fragment_history, container, false);
         list = (ListView) historyLayout.findViewById(android.R.id.list);
         datePicker = (Button) historyLayout.findViewById(R.id.date_begin_end_pick);
-        dateScopeText = (TextView) historyLayout.findViewById(R.id.date_begin_end);
+//        dateScopeText = (TextView) historyLayout.findViewById(R.id.date_begin_end);
         cal = Calendar.getInstance();
         datePicker.setOnClickListener(new View.OnClickListener() {
 

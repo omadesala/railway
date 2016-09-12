@@ -44,7 +44,7 @@ public class ADService extends Service {
     public static int dataCount = 100;
 
 
-    public static float micronVoltage = (float) (17.0 / 5000);// 每微米电压值
+    public static float micronVoltage = 17.0f / 5000.0f;// 每微米电压值
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -60,11 +60,11 @@ public class ADService extends Service {
 
         SharedPreferences setting = getSharedPreferences("setting", Activity.MODE_PRIVATE);
         if (setting != null) {
-            sensorScopevalue = setting.getFloat(Constants.sensorScope, 0);
-            sensorVelocityvalue = setting.getFloat(Constants.sensorVelocity, 0);
-            measureDistance = setting.getFloat(Constants.measureDistance, 0);
-            sensorVoltateMinvalue = setting.getFloat(Constants.sensorVoltageMin, 0);
-            sensorVoltateMaxvalue = setting.getFloat(Constants.sensorVoltageMax, 0);
+            sensorScopevalue = setting.getFloat(Constants.sensorScope, 5.0f);
+            sensorVelocityvalue = setting.getFloat(Constants.sensorVelocity, 0.418879f);
+            measureDistance = setting.getFloat(Constants.measureDistance, 1.0f);
+            sensorVoltateMinvalue = setting.getFloat(Constants.sensorVoltageMin, -6.6f);
+            sensorVoltateMaxvalue = setting.getFloat(Constants.sensorVoltageMax, 10.0f);
 
             float sensorVoltateScopevalue = sensorVoltateMaxvalue - sensorVoltateMinvalue;
             if (sensorVoltateScopevalue > 0 && sensorScopevalue > 0) {
@@ -403,11 +403,11 @@ public class ADService extends Service {
 
                     case Constants.SETTING_MODE:
 
-                        sensorScopevalue = intent.getFloatExtra(Constants.SENSOR_MAX_SCOPE, 0);
-                        sensorVelocityvalue = intent.getFloatExtra(Constants.SENSOR_VELOCITY, 0);
-                        measureDistance = intent.getFloatExtra(Constants.MEASURE_DISTANCE, 0);
-                        sensorVoltateMaxvalue = intent.getFloatExtra(Constants.SENSOR_VOLTAGE_MAX, 0);
-                        sensorVoltateMinvalue = intent.getFloatExtra(Constants.SENSOR_VOLTAGE_MIN, 0);
+                        sensorScopevalue = intent.getFloatExtra(Constants.SENSOR_MAX_SCOPE, 5.0f);
+                        sensorVelocityvalue = intent.getFloatExtra(Constants.SENSOR_VELOCITY, 0.418879f);
+                        measureDistance = intent.getFloatExtra(Constants.MEASURE_DISTANCE, 1.0f);
+                        sensorVoltateMinvalue = intent.getFloatExtra(Constants.SENSOR_VOLTAGE_MIN, -6.6f);
+                        sensorVoltateMaxvalue = intent.getFloatExtra(Constants.SENSOR_VOLTAGE_MAX, 10.0f);
 
                         float sensorVoltateScopevalue = sensorVoltateMaxvalue - sensorVoltateMinvalue;
                         if (sensorVoltateScopevalue > 0 && sensorScopevalue > 0) {

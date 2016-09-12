@@ -38,8 +38,8 @@ public class SensorPositionFragment extends Fragment {
 
     private static LineChart mChart;
     private static boolean hide = false;
-    private static float minScope;
-    private static float maxScope;
+//    private static float minScope;
+//    private static float maxScope;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,10 +47,10 @@ public class SensorPositionFragment extends Fragment {
         View statLayout = inflater.inflate(R.layout.fragment_sensorposition, container, false);
 
         SharedPreferences setting = getActivity().getSharedPreferences("setting", Activity.MODE_PRIVATE);
-        if (setting != null) {
-            minScope = setting.getFloat(Constants.minScope, 0);
-            maxScope = setting.getFloat(Constants.maxScope, 0);
-        }
+//        if (setting != null) {
+//            minScope = setting.getFloat(Constants.minScope, 0);
+//            maxScope = setting.getFloat(Constants.maxScope, 0);
+//        }
         mChart = (LineChart) statLayout.findViewById(R.id.position_chart);
         mChart.setDescription("传感器基准位置核对");
         mChart.setNoDataTextDescription("暂时尚无数据");
@@ -135,10 +135,10 @@ public class SensorPositionFragment extends Fragment {
         getActivity().registerReceiver(actionReceiver, filter);
 
         SharedPreferences setting = getActivity().getSharedPreferences("setting", Activity.MODE_PRIVATE);
-        if (setting != null) {
-            minScope = setting.getFloat(Constants.minScope, 0);
-            maxScope = setting.getFloat(Constants.maxScope, 0);
-        }
+//        if (setting != null) {
+//            minScope = setting.getFloat(Constants.minScope, 0);
+//            maxScope = setting.getFloat(Constants.maxScope, 0);
+//        }
     }
 
     @Override

@@ -40,6 +40,7 @@ import java.util.List;
 import cn.christian.server.application.RailWayApp;
 import cn.christian.server.dao.Record;
 import cn.christian.server.utils.Constants;
+import cn.christian.server.utils.DataUtil;
 
 /**
  * Created by Administrator on 2016/9/1.
@@ -47,36 +48,11 @@ import cn.christian.server.utils.Constants;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MeasureFragment extends Fragment {
 
-    public final static int MSG_DATA_RECEIVED = 0;
+    //    public final static int MSG_DATA_RECEIVED = 0;
     private static LineChart mChart;
     private static boolean hide = false;
     private static float minScope;
     private static float maxScope;
-    private static float sensorScopeValue;
-    private static float maxPoint;
-
-
-    public static float getMax(float[] datas) {
-
-        float max = Float.MIN_VALUE;
-        for (int i = 0; i < datas.length; i++) {
-            if (datas[i] > max) {
-                max = datas[i];
-            }
-        }
-        return max;
-    }
-
-    public static float getMin(float[] datas) {
-
-        float min = Float.MAX_VALUE;
-        for (int i = 0; i < datas.length; i++) {
-            if (datas[i] < min) {
-                min = datas[i];
-            }
-        }
-        return min;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -193,74 +169,9 @@ public class MeasureFragment extends Fragment {
         if (setting != null) {
             minScope = setting.getFloat(Constants.minScope, 0);
             maxScope = setting.getFloat(Constants.maxScope, 0);
-            sensorScopeValue = setting.getFloat(Constants.sensorScope, 0);
         }
     }
 
-
-    // 添加进去一个坐标点
-    private static void addEntry(double voltage, boolean hide) {
-
-
-        LineData data = mChart.getData();
-
-        // 每一个LineDataSet代表一条线，每张统计图表可以同时存在若干个统计折线，这些折线像数组一样从0开始下标。
-        // 本例只有一个，那么就是第0条折线
-        LineDataSet set = data.getDataSetByIndex(0);
-
-        // 如果该统计折线图还没有数据集，则创建一条出来，如果有则跳过此处代码。
-        if (set == null) {
-            set = createLineDataSet();
-            data.addDataSet(set);
-        }
-
-        // 先添加一个x坐标轴的值
-        // 因为是从0开始，data.getXValCount()每次返回的总是全部x坐标轴上总数量，所以不必多此一举的加1
-
-        data.addXValue((data.getXValCount()) + "");
-
-        // 生成随机测试数
-//        float f = (float) ((Math.random()) * 20 + 50);
-
-        float f = (float) voltage;
-        // set.getEntryCount()获得的是所有统计图表上的数据点总量，
-        // 如从0开始一样的数组下标，那么不必多次一举的加1
-        Entry entry = new Entry(f, set.getEntryCount());
-
-        // 往linedata里面添加点。注意：addentry的第二个参数即代表折线的下标索引。
-        // 因为本例只有一个统计折线，那么就是第一个，其下标为0.
-        // 如果同一张统计图表中存在若干条统计折线，那么必须分清是针对哪一条（依据下标索引）统计折线添加。
-        data.addEntry(entry, 0);
-
-        // 像ListView那样的通知数据更新
-        mChart.notifyDataSetChanged();
-
-        // 当前统计图表中最多在x轴坐标线上显示的总量
-        mChart.setVisibleXRangeMaximum(20);
-
-        Legend l = mChart.getLegend();
-
-        String[] labels = {"最大值 " + maxPoint};
-        int[] colors = {Color.BLUE};
-        l.setCustom(colors, labels);
-        l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
-        l.setForm(Legend.LegendForm.LINE);
-        l.setTextColor(Color.RED);
-
-
-        // y坐标轴线最大值
-        // mChart.setVisibleYRange(30, AxisDependency.LEFT);
-
-        // 将坐标移动到最新
-        // 此代码将刷新图表的绘图
-        if (!hide) {
-            mChart.moveViewToX(data.getXValCount() - 5);
-        }
-
-//        mChart.moveViewToX(data.getXValCount() - 5);
-        // mChart.moveViewTo(data.getXValCount()-7, 55f,
-        // AxisDependency.LEFT);
-    }
 
     // 添加进去一个坐标点
     private static void addEntrys(float[] distance, boolean hide) {
@@ -273,56 +184,17 @@ public class MeasureFragment extends Fragment {
 
         mChart.setData(data);
 
-//        LineData data = mChart.getData();
-//        if (data != null) {
-//            data.removeDataSet(0);
-//            mChart.notifyDataSetChanged();
-//            mChart.invalidate();
-//        }
 
         LineDataSet set = createLineDataSet();
         data.addDataSet(set);
 
-//        LineDataSet set = data.getDataSetByIndex(0);
-//        if (set == null) {
-//            set = createLineDataSet();
-//            data.addDataSet(set);
-//        }
-
-        int entrynum = set.getEntryCount();
-        int xValueCount = data.getXValCount();
-        Log.d("MEASURE", "before remove getXValCount: " + xValueCount);
-        Log.d("MEASURE", "before remove data count: " + entrynum);
-//        for (int i = 0; i < xValueCount; i++) {
-//            data.removeXValue(i);
-////            set.removeLast();
-//        }
-
-        entrynum = set.getEntryCount();
-
-        Log.d("MEASURE", "after remove getXValCount: " + data.getXValCount());
-        Log.d("MEASURE", "after remove data count: " + entrynum);
-
         mChart.notifyDataSetChanged();
-//        mChart.invalidate();
 
-        StringBuffer sb = new StringBuffer();
         for (int i = 0; i < distance.length; i++) {
-            sb.append(distance[i]).append(",");
             Entry entry = new Entry(distance[i], set.getEntryCount());
-//            if (xValueCount == 0) {
-//                data.addXValue(i + "");
-//            }
             data.addXValue(i + "");
             data.addEntry(entry, 0);
         }
-
-        xValueCount = data.getXValCount();
-        entrynum = set.getEntryCount();
-        Log.d("MEASURE", "current getXValCount: " + xValueCount);
-        Log.d("MEASURE", "current data count: " + entrynum);
-
-        Log.d("MEASURE", "data: " + sb.toString());
 
 
         // 像ListView那样的通知数据更新
@@ -333,7 +205,7 @@ public class MeasureFragment extends Fragment {
 
         Legend l = mChart.getLegend();
 
-        String[] labels = {"最大值 " + maxPoint};
+        String[] labels = {"最大值:" + DataUtil.getMax(distance)};
         int[] colors = {Color.BLUE};
         l.setCustom(colors, labels);
         l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
@@ -352,9 +224,6 @@ public class MeasureFragment extends Fragment {
 //            mChart.invalidate();
         }
 
-//        mChart.moveViewToX(data.getXValCount() - 5);
-        // mChart.moveViewTo(data.getXValCount()-7, 55f,
-        // AxisDependency.LEFT);
     }
 
     // 初始化数据集，添加一条统计折线，可以简单的理解是初始化y坐标轴线上点的表征
@@ -403,8 +272,6 @@ public class MeasureFragment extends Fragment {
         if (setting != null) {
             minScope = setting.getFloat(Constants.minScope, 0);
             maxScope = setting.getFloat(Constants.maxScope, 0);
-
-            sensorScopeValue = setting.getFloat(Constants.sensorScope, 0);
 
             YAxis leftAxis = mChart.getAxisLeft();
             // 最大值

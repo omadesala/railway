@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageButton;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -29,6 +30,7 @@ import java.util.List;
 import cn.christian.server.application.RailWayApp;
 import cn.christian.server.dao.Record;
 import cn.christian.server.utils.Constants;
+import cn.christian.server.utils.DataUtil;
 
 /**
  * Created by Administrator on 2016/9/10.
@@ -42,6 +44,7 @@ public class HistoryDataActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.historydata);
         initView();
 
@@ -160,7 +163,7 @@ public class HistoryDataActivity extends Activity {
         // 图表的注解(只有当数据集存在时候才生效)
         Legend l = mChart.getLegend();
 
-//        String[] labels = {"最大值100"};
+//        String[] labels = {"最大值"+ DataUtil.getMax()};
 //        int[] colors = {Color.RED};
 //        l.setCustom(colors, labels);
 
@@ -225,15 +228,9 @@ public class HistoryDataActivity extends Activity {
 
 
         mChart.notifyDataSetChanged();
-//        mChart.invalidate();
 
-        StringBuffer sb = new StringBuffer();
         for (int i = 0; i < distance.length; i++) {
-            sb.append(distance[i]).append(",");
             Entry entry = new Entry(distance[i], set.getEntryCount());
-//            if (xValueCount == 0) {
-//                data.addXValue(i + "");
-//            }
             data.addXValue(i + "");
             data.addEntry(entry, 0);
         }
@@ -247,8 +244,8 @@ public class HistoryDataActivity extends Activity {
 
         Legend l = mChart.getLegend();
 
-        String[] labels = {"最大值 "};
-        int[] colors = {Color.BLUE};
+        String[] labels = {"最大值: " + DataUtil.getMax(distance)};
+        int[] colors = {Color.RED};
         l.setCustom(colors, labels);
         l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
         l.setForm(Legend.LegendForm.LINE);
@@ -266,9 +263,6 @@ public class HistoryDataActivity extends Activity {
 //            mChart.invalidate();
         }
 
-//        mChart.moveViewToX(data.getXValCount() - 5);
-        // mChart.moveViewTo(data.getXValCount()-7, 55f,
-        // AxisDependency.LEFT);
     }
 
     // 初始化数据集，添加一条统计折线，可以简单的理解是初始化y坐标轴线上点的表征

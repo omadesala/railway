@@ -43,17 +43,13 @@ public class SettingFragment extends Fragment {
     private EditText maxScopeEditText;
 
 
-    private RadioGroup measureMode;
-    private RadioButton scanMode;
-    private RadioButton interuptMode;
-
-    float sensorScopeValue = 5;
-    float sensorVelocityValue = 5;
-    float measureDistanceValue = (float) 1.0;
-    float sensorVoltageMaxValue = -5;
-    float sensorVoltageMinValue = 12;
-    float minScopeValue = 0;
-    float maxScopeValue = 0;
+    float sensorScopeValue = 5.0f;
+    float sensorVelocityValue = 0.418979f;
+    float measureDistanceValue = 1.0f;
+    float sensorVoltageMaxValue = -6.6f;
+    float sensorVoltageMinValue = 10.0f;
+    float minScopeValue = 0.0f;
+    float maxScopeValue = 0.0f;
 
 
     private Button save;
@@ -258,10 +254,6 @@ public class SettingFragment extends Fragment {
 
 
                                         minScopeValue = Float.parseFloat(minScopeStr);
-//                                        if (minScopeValue < 0) {
-//                                            showDialog("错误提示", "显示下限不能小于0");
-//                                            return;
-//                                        }
                                         maxScopeValue = Float.parseFloat(maxScopeStr);
                                         if (minScopeValue > maxScopeValue) {
                                             showDialog("错误提示", "显示上限小于下限");
@@ -277,14 +269,6 @@ public class SettingFragment extends Fragment {
                                         edit.putFloat(Constants.maxScope, maxScopeValue);
                                         edit.putFloat(Constants.minScope, minScopeValue);
 
-//                                        if (scanMode.isChecked()) {
-//                                            edit.putBoolean(Constants.dataMode, true);
-//                                            sendBroadcastToService(ADService.SCAN_MODE);
-//                                        } else {
-//                                            edit.putBoolean(Constants.dataMode, false);
-//                                            sendBroadcastToService(ADService.INTERUPE_MODE);
-//                                        }
-
                                         edit.commit();
 
                                         sendSensorParameterToService();
@@ -296,28 +280,18 @@ public class SettingFragment extends Fragment {
                                 }
 
         );
-//        measureMode = (RadioGroup) settingLayout.findViewById(R.id.measure_mode);
-//        scanMode = (RadioButton) settingLayout.findViewById(R.id.measure_scan);
-//        interuptMode = (RadioButton) settingLayout.findViewById(R.id.measure_interupt);
 
         SharedPreferences setting = getActivity().getSharedPreferences(Constants.SETTINGS, Activity.MODE_PRIVATE);
         if (setting != null) {
 
-            sensorScopeEditText.setText(String.valueOf(setting.getFloat(Constants.sensorScope, 0)));
-            sensorVelocityEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVelocity, 0)));
-            measureDistanceEditText.setText(String.valueOf(setting.getFloat(Constants.measureDistance, 0)));
-            sensorVoltageMinEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageMin, 0)));
-            sensorVoltageMaxEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageMax, 0)));
+            sensorScopeEditText.setText(String.valueOf(setting.getFloat(Constants.sensorScope, 5.0f)));
+            sensorVelocityEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVelocity, 0.418879f)));
+            measureDistanceEditText.setText(String.valueOf(setting.getFloat(Constants.measureDistance, 5.0f)));
+            sensorVoltageMinEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageMin, -6.6f)));
+            sensorVoltageMaxEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageMax, 10.0f)));
 
-            minScopeEditText.setText(String.valueOf(setting.getFloat(Constants.minScope, 0)));
-            maxScopeEditText.setText(String.valueOf(setting.getFloat(Constants.maxScope, 0)));
-//
-//            boolean mode = setting.getBoolean(Constants.dataMode, true);
-//            if (mode) {
-//                scanMode.setChecked(true);
-//            } else {
-//                interuptMode.setChecked(true);
-//            }
+            minScopeEditText.setText(String.valueOf(setting.getFloat(Constants.minScope, -1.5f)));
+            maxScopeEditText.setText(String.valueOf(setting.getFloat(Constants.maxScope, 1.5f)));
         }
 
 
@@ -357,14 +331,14 @@ public class SettingFragment extends Fragment {
         SharedPreferences setting = getActivity().getSharedPreferences("setting", Activity.MODE_PRIVATE);
         if (setting != null) {
 
-            sensorScopeEditText.setText(String.valueOf(setting.getFloat(Constants.sensorScope, 0)));
-            sensorVelocityEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVelocity, 0)));
-            measureDistanceEditText.setText(String.valueOf(setting.getFloat(Constants.measureDistance, 0)));
-            sensorVoltageMaxEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageMax, 0)));
-            sensorVoltageMinEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageMin, 0)));
+            sensorScopeEditText.setText(String.valueOf(setting.getFloat(Constants.sensorScope, 5.0f)));
+            sensorVelocityEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVelocity, 0.418879f)));
+            measureDistanceEditText.setText(String.valueOf(setting.getFloat(Constants.measureDistance, 5.0f)));
+            sensorVoltageMaxEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageMax, -6.6f)));
+            sensorVoltageMinEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageMin, 10.0f)));
 
-            minScopeEditText.setText(String.valueOf(setting.getFloat(Constants.minScope, 0)));
-            maxScopeEditText.setText(String.valueOf(setting.getFloat(Constants.maxScope, 0)));
+            minScopeEditText.setText(String.valueOf(setting.getFloat(Constants.minScope, -1.5f)));
+            maxScopeEditText.setText(String.valueOf(setting.getFloat(Constants.maxScope, 1.5f)));
         }
     }
 }
