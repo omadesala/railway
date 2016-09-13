@@ -1,5 +1,7 @@
 package cn.christian.server.utils;
 
+import android.util.Log;
+
 import java.util.Arrays;
 
 /**
@@ -45,6 +47,7 @@ public class DataUtil {
                 max = datas[i];
             }
         }
+        Log.d("MAX", "" + max);
         return max;
     }
 
@@ -70,53 +73,53 @@ public class DataUtil {
         return datas[datas.length / 2]; // 找出排序后中间的数组值
     }
 
- public float[] getValidData(float[] data, int length) {
+    public float[] getValidData(float[] data, int length) {
 
-             int startindex = 0;
-             int endindex = 0;
-             float delta = 0.01f;
+        int startindex = 0;
+        int endindex = 0;
+        float delta = 0.01f;
 
-             for (int i = 0; i < data.length - 1; i++) {
-                  boolean forward = data[i + 1] - data[i] < delta;
-                  boolean forback = data[data.length - i - 1] - data[data.length - i - 2] < delta;
+        for (int i = 0; i < data.length - 1; i++) {
+            boolean forward = data[i + 1] - data[i] < delta;
+            boolean forback = data[data.length - i - 1] - data[data.length - i - 2] < delta;
 
-                 if (forward && forback) {
-                          continue;
-                 }
+            if (forward && forback) {
+                continue;
+            }
 
-                 if (startindex == 0) {
-                   if (!forward) {
-                        startindex = i;
-                    }
-                 }
+            if (startindex == 0) {
+                if (!forward) {
+                    startindex = i;
+                }
+            }
 
-                 if (endindex == 0) {
-                    if (forward && !forback) {
-                       endindex = data.length - 1 - i;
-                    }
-                 }
-             }
+            if (endindex == 0) {
+                if (forward && !forback) {
+                    endindex = data.length - 1 - i;
+                }
+            }
+        }
 
-             System.out.println("startindex  is :" + startindex);
-             System.out.println("endindex  is :" + endindex);
+        System.out.println("startindex  is :" + startindex);
+        System.out.println("endindex  is :" + endindex);
 
-             int datasize = endindex - startindex;
-             System.out.println("data size is :" + datasize);
-             if (datasize < length) {
-                    System.out.println("data not enough");
+        int datasize = endindex - startindex;
+        System.out.println("data size is :" + datasize);
+        if (datasize < length) {
+            System.out.println("data not enough");
 
-                 int offset=  datasize - length;
-                 startindex = startindex + offset/2;
-                 endindex = endindex + offset/2;
+            int offset = datasize - length;
+            startindex = startindex + offset / 2;
+            endindex = endindex + offset / 2;
 
 
-             } else {
-                    System.out.println("data is ok");
-             }
+        } else {
+            System.out.println("data is ok");
+        }
 
-             return Arrays.copyOfRange(data, startindex, endindex);
+        return Arrays.copyOfRange(data, startindex, endindex);
 
-  }
+    }
 
 
 }

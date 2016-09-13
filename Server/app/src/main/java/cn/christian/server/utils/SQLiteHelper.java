@@ -110,6 +110,28 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         return rets;
     }
 
+    public List<Record> getRecordByInterval(Date begin, Date end) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery("select * from record where createdate >? and createdate < ? ", new String[]{String.valueOf(begin.getTime()), String.valueOf(end.getTime())});
+        List<Record> rets = Lists.newArrayList();
+        cursor.moveToFirst();
+
+        if (cursor.getCount() == 0) {
+            return rets;
+        }
+        do {
+            Record item = new Record();
+            item.setId(cursor.getInt(0));
+            item.setCode(cursor.getString(1));
+            item.setData(cursor.getString(2));
+            item.setCreatedate(cursor.getInt(3));
+            rets.add(item);
+        } while (cursor.moveToNext());
+        return rets;
+    }
+
     public Record getRecordById(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
 

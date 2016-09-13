@@ -63,8 +63,8 @@ public class ADService extends Service {
             sensorScopevalue = setting.getFloat(Constants.sensorScope, 5.0f);
             sensorVelocityvalue = setting.getFloat(Constants.sensorVelocity, 0.418879f);
             measureDistance = setting.getFloat(Constants.measureDistance, 1.0f);
-            sensorVoltateMinvalue = setting.getFloat(Constants.sensorVoltageMin, -6.6f);
-            sensorVoltateMaxvalue = setting.getFloat(Constants.sensorVoltageMax, 10.0f);
+            sensorVoltateMinvalue = setting.getFloat(Constants.sensorVoltageMin, -5.0f);
+            sensorVoltateMaxvalue = setting.getFloat(Constants.sensorVoltageMax, 12.0f);
 
             float sensorVoltateScopevalue = sensorVoltateMaxvalue - sensorVoltateMinvalue;
             if (sensorVoltateScopevalue > 0 && sensorScopevalue > 0) {
@@ -379,8 +379,10 @@ public class ADService extends Service {
             String action = intent.getAction();
             if (action.equals(Constants.SENSOR_POSITION_CHECK)) {
                 boolean status = intent.getBooleanExtra(Constants.SENSOR_POSITION_CHECK, false);
-                ConnectionHandle.dataParser.setBaseConfirm(status);
-                Log.d("ADService", "停止位置校准 " + status);
+                if (ConnectionHandle.dataParser != null) {
+                    ConnectionHandle.dataParser.setBaseConfirm(status);
+                    Log.d("ADService", "停止位置校准 " + status);
+                }
             } else {
 
                 int type = intent.getIntExtra(Constants.MSG_TYPE, -1);

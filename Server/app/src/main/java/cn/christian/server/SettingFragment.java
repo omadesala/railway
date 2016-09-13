@@ -46,8 +46,8 @@ public class SettingFragment extends Fragment {
     float sensorScopeValue = 5.0f;
     float sensorVelocityValue = 0.418979f;
     float measureDistanceValue = 1.0f;
-    float sensorVoltageMaxValue = -6.6f;
-    float sensorVoltageMinValue = 10.0f;
+    float sensorVoltageMaxValue = -5.0f;
+    float sensorVoltageMinValue = 12.0f;
     float minScopeValue = 0.0f;
     float maxScopeValue = 0.0f;
 

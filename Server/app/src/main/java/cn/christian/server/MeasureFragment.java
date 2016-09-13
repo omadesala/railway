@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -50,15 +51,85 @@ public class MeasureFragment extends Fragment {
 
     //    public final static int MSG_DATA_RECEIVED = 0;
     private static LineChart mChart;
+    private static Button save;
     private static boolean hide = false;
     private static float minScope;
     private static float maxScope;
+    private float[] distances = null;
+    private boolean saved = false;
+    private String DATA_SAVED_STATUS = "DATA_SAVED_STATUS";
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(DATA_SAVED_STATUS, saved);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        if (savedInstanceState != null) {
+            saved = savedInstanceState.getBoolean(DATA_SAVED_STATUS);
+        }
+
         View measureLayout = inflater.inflate(R.layout.fragment_measure, container, false);
 
+        save = (Button) measureLayout.findViewById(R.id.data_save);
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (distances == null) {
+                    Toast.makeText(
+                            getActivity(),
+                            "无数据", Toast.LENGTH_LONG).
+                            show();
+                    return;
+                }
+
+                if (saved) {
+                    Toast.makeText(
+                            getActivity(),
+                            "数据已保存过", Toast.LENGTH_LONG).
+                            show();
+                    return;
+                }
+
+
+                List<Float> data = Lists.newArrayList();
+                for (int i = 0; i < distances.length; i++) {
+                    data.add(distances[i]);
+                }
+
+                final EditText code = new EditText(getActivity());
+                final String dataStr = Joiner.on(",").join(data);
+                Log.d("DISTANCE", dataStr);
+
+                new AlertDialog.Builder(getActivity()).setTitle("请输入编号").setIcon(android.R.drawable.ic_dialog_info).setView(code).setMessage("日期编号").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        saved = true;
+                        Record item = new Record();
+                        item.setCode(code.getText().toString());
+                        Log.d("DISTANCE SAVE", dataStr);
+                        Log.d("DISTANCE SAVE2", dataStr.toString());
+                        item.setData(dataStr.toString());
+                        item.setCreatedate(new Date().getTime());
+                        RailWayApp.getSqlite().addRecord(item);
+                        Log.d("MEASURE_PAGE", "record has been saved !!!");
+                        Toast.makeText(
+                                getActivity(),
+                                "数据保存成功", Toast.LENGTH_LONG).
+                                show();
+
+
+                    }
+                }).setNegativeButton("取消", null).show();
+
+            }
+        });
         mChart = (LineChart) measureLayout.findViewById(R.id.chart);
         mChart.setDescription("瑞威科技");
         mChart.setNoDataTextDescription("暂时尚无数据");
@@ -159,6 +230,11 @@ public class MeasureFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            saved = savedInstanceState.getBoolean(DATA_SAVED_STATUS);
+        }
+
         DataReceiver actionReceiver = new DataReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.SENSOR_DATA_COMMING);
@@ -308,36 +384,37 @@ public class MeasureFragment extends Fragment {
 
             String action = intent.getAction();
             if (action.equals(Constants.SENSOR_DATA_COMMING)) {
-                float[] distances = intent.getFloatArrayExtra(Constants.SENSOR_DATA);
+                distances = intent.getFloatArrayExtra(Constants.SENSOR_DATA);
                 if (distances != null) {
+                    saved = false;
                     Log.d("MEASURE", "DATA RECEIVED !!! length = " + distances.length);
                     Log.d("MEASURE", "DATA: " + distances.toString());
                     addEntrys(distances, hide);
 
-                    List<Float> data = Lists.newArrayList();
-                    for (int i = 0; i < distances.length; i++) {
-                        data.add(distances[i]);
-                    }
+//                    List<Float> data = Lists.newArrayList();
+//                    for (int i = 0; i < distances.length; i++) {
+//                        data.add(distances[i]);
+//                    }
+//
+//                    final EditText code = new EditText(getActivity());
+//                    final String dataStr = Joiner.on(",").join(data);
+//                    Log.d("DISTANCE", dataStr);
 
-                    final EditText code = new EditText(getActivity());
-                    final String dataStr = Joiner.on(",").join(data);
-                    Log.d("DISTANCE", dataStr);
-
-                    new AlertDialog.Builder(getActivity()).setTitle("请输入编号").setIcon(android.R.drawable.ic_dialog_info).setView(code).setMessage("日期编号").setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            Record item = new Record();
-                            item.setCode(code.getText().toString());
-                            Log.d("DISTANCE SAVE", dataStr);
-                            Log.d("DISTANCE SAVE2", dataStr.toString());
-                            item.setData(dataStr.toString());
-                            item.setCreatedate(new Date().getTime());
-                            RailWayApp.getSqlite().addRecord(item);
-                            Log.d("MEASURE_PAGE", "record has been saved !!!");
-
-                        }
-                    }).setNegativeButton("取消", null).show();
+//                    new AlertDialog.Builder(getActivity()).setTitle("请输入编号").setIcon(android.R.drawable.ic_dialog_info).setView(code).setMessage("日期编号").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//
+//                            Record item = new Record();
+//                            item.setCode(code.getText().toString());
+//                            Log.d("DISTANCE SAVE", dataStr);
+//                            Log.d("DISTANCE SAVE2", dataStr.toString());
+//                            item.setData(dataStr.toString());
+//                            item.setCreatedate(new Date().getTime());
+//                            RailWayApp.getSqlite().addRecord(item);
+//                            Log.d("MEASURE_PAGE", "record has been saved !!!");
+//
+//                        }
+//                    }).setNegativeButton("取消", null).show();
                 }
             }
             if (action.equals(Constants.SENSOR_BASE_POSITION_NOTCORRUCET)) {

@@ -1,3 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
 
+    <item
+        jar="C:\Users\Administrator\.gradle\caches\modules-2\files-2.1\com.google.guava\guava\15.0\ed727a8d9f247e2050281cb083f1c77b09dcb5cd\guava-15.0.jar"
+        jumboMode="true"
+        revision="24.0.2"
+        sha1="ed727a8d9f247e2050281cb083f1c77b09dcb5cd">
+        <dex dex="E:\workspace\railway\Server\app\build\intermediates\pre-dexed\debug\guava-15.0_fd3104f663d87bb88049f1df224d367132128f7c.jar" />
+    </item>
+    <item
+        jar="E:\workspace\railway\Server\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        revision="24.0.2"
+        sha1="7c836b7bca42fbe01b3a48688390df378f18860a">
+        <dex dex="E:\workspace\railway\Server\app\build\intermediates\pre-dexed\debug\instant-run_15625f61a942ab0ba084a46c7e31af69e39e2005.jar" />
+    </item>
+    <item
+        jar="C:\Users\Administrator\StudioProjects\Server\libs\mpandroidchartlibrary-2-1-6.jar"
+        jumboMode="true"
+        revision="24.0.2"
+        sha1="3f8beaf2f9b5357717e0b1ef9f6820e517784ea1">
+        <dex dex="E:\workspace\railway\Server\app\build\intermediates\pre-dexed\debug\mpandroidchartlibrary-2-1-6_f17934dcfea6963a81acca30d83dbd29d350cc12.jar" />
+    </item>
+    <item
+        jar="E:\workspace\railway\Server\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="24.0.2"
+        sha1="1d47c85bead3541c2fd9eb9a1fbc525f8e63a7b4">
+        <dex dex="E:\workspace\railway\Server\app\build\intermediates\pre-dexed\debug\instant-run-bootstrap_dc3cd161606d16304200ceb4a9f9674b6d31ba76.jar" />
+    </item>
+
+</items>
