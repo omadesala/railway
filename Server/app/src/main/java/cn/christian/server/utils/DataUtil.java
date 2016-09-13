@@ -104,6 +104,12 @@ public class DataUtil {
              System.out.println("data size is :" + datasize);
              if (datasize < length) {
                     System.out.println("data not enough");
+
+                 int offset=  datasize - length;
+                 startindex = startindex + offset/2;
+                 endindex = endindex + offset/2;
+
+
              } else {
                     System.out.println("data is ok");
              }
