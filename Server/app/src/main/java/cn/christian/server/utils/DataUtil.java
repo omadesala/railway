@@ -69,4 +69,48 @@ public class DataUtil {
         Arrays.sort(datas);   // 数组从小到大排序
         return datas[datas.length / 2]; // 找出排序后中间的数组值
     }
+
+ public float[] getValidData(float[] data, int length) {
+
+             int startindex = 0;
+             int endindex = 0;
+             float delta = 0.01f;
+
+             for (int i = 0; i < data.length - 1; i++) {
+                  boolean forward = data[i + 1] - data[i] < delta;
+                  boolean forback = data[data.length - i - 1] - data[data.length - i - 2] < delta;
+
+                 if (forward && forback) {
+                          continue;
+                 }
+
+                 if (startindex == 0) {
+                   if (!forward) {
+                        startindex = i;
+                    }
+                 }
+
+                 if (endindex == 0) {
+                    if (forward && !forback) {
+                       endindex = data.length - 1 - i;
+                    }
+                 }
+             }
+
+             System.out.println("startindex  is :" + startindex);
+             System.out.println("endindex  is :" + endindex);
+
+             int datasize = endindex - startindex;
+             System.out.println("data size is :" + datasize);
+             if (datasize < length) {
+                    System.out.println("data not enough");
+             } else {
+                    System.out.println("data is ok");
+             }
+
+             return Arrays.copyOfRange(data, startindex, endindex);
+
+  }
+
+
 }
