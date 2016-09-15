@@ -156,16 +156,16 @@ public class DataParser {
         String dataStr = iterator.next();// data0
         int datalength = Integer.parseInt(tag, 16);
         voltages = new Float[datalength];
-        StringBuffer sb = new StringBuffer();
+
         for (int i = 0; i < datalength; i++) {
             String dataitem = dataStr.substring(3 * i, 3 * i + 3);
             int datai = Integer.parseInt(dataitem, 16);
             if (datai < 0 || datai > 4096) {
-                Log.e("Parser", "data error");
+                Log.e("Parser", "data error :" + dataitem);
                 datai = 0;
             }
             voltages[i] = scope * (datai / resolution);
-            sb.append(voltages[i]).append(",");
+//            sb.append(voltages[i]).append(",");
         }
 
 //        Log.d("Parser", "voltage is: " + sb.toString());

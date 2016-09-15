@@ -318,7 +318,8 @@ public class MeasureFragment extends Fragment {
         set.setFillAlpha(128);
         set.setFillColor(ColorTemplate.getHoloBlue());
         set.setHighLightColor(Color.GREEN);
-        set.setValueTextColor(Color.WHITE);
+//        set.setValueTextColor(Color.WHITE);
+        set.setValueTextColor(Color.BLACK);
         set.setValueTextSize(10f);
 
 

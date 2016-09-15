@@ -1,4 +1,5 @@
 build/
+captures/
 .gradle/
 .idea/
 app/build/
