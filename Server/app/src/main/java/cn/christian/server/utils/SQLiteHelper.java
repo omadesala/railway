@@ -92,6 +92,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor cursor = db.rawQuery("select * from record where createdate =? ", new String[]{String.valueOf(date.getTime())});
+//        Cursor cursor = db.rawQuery("select * from record where createdate >=? and createdate<=? ", new String[]{String.valueOf(date.getTime()), String.valueOf(DateUtil.plusDays(date, 1))});
         List<Record> rets = Lists.newArrayList();
         cursor.moveToFirst();
 

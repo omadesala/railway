@@ -13,8 +13,10 @@ public class RailWayApp extends Application {
 
     @Override
     public void onCreate() {
-        sqlite = new SQLiteHelper(this, "records");
         super.onCreate();
+        sqlite = new SQLiteHelper(this, "records");
+
+//        sqlite.deleteAllRecord();
     }
 
     public static SQLiteHelper getSqlite() {

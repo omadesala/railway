@@ -292,12 +292,18 @@ public class ADService extends Service {
                         String token = in.next();
 //                        Log.e(TAG, token);
 
-                        if (token.startsWith(Constants.SENSOR_DATA_START_TAG)) {
+//                        if (token.startsWith(Constants.SENSOR_DATA_START_TAG)) {
+                        if (token.contains(Constants.SENSOR_DATA_START_TAG)) {
 //                            Log.d("ADService", " a record start");
                             sb = new StringBuffer();
+                            int start = token.indexOf(Constants.SENSOR_DATA_START_TAG);
+                            if (start != 0) {
+                                Log.e("ADService", "data exception");
+                            }
+                            sb.append(token.substring(start));
+                        } else {
+                            sb.append(token);
                         }
-                        sb.append(token);
-
                         if (token.endsWith("EEFF")) {
                             String record = sb.toString();
 //                            Log.d("ADService", "received a record " + record);

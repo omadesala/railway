@@ -63,17 +63,17 @@ public class SensorPositionFragment extends Fragment {
 
         LineData data = new LineData();
 
-        data.setValueTextColor(Color.WHITE);
+        data.setValueTextColor(Color.BLACK);
         mChart.setData(data);
 
-        Legend l = mChart.getLegend();
-        l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
-        l.setForm(Legend.LegendForm.LINE);
-        l.setTextColor(Color.BLUE);
+//        Legend l = mChart.getLegend();
+//        l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
+//        l.setForm(Legend.LegendForm.LINE);
+//        l.setTextColor(Color.BLUE);
 
         // x坐标轴
         XAxis xl = mChart.getXAxis();
-        xl.setTextColor(Color.WHITE);
+        xl.setTextColor(Color.BLACK);
         xl.setDrawGridLines(false);
         xl.setAvoidFirstLastClipping(true);
 
@@ -88,7 +88,7 @@ public class SensorPositionFragment extends Fragment {
 
         // 图表左边的y坐标轴线
         YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setTextColor(Color.WHITE);
+        leftAxis.setTextColor(Color.BLACK);
 
         // 设置x轴的LimitLine
         LimitLine ySumLimitLine = new LimitLine(0.1f, "基准上限 0.1mm");
@@ -216,6 +216,7 @@ public class SensorPositionFragment extends Fragment {
     private static LineDataSet createLineDataSet() {
 
         LineDataSet set = new LineDataSet(null, "传感器位置");
+//        LineDataSet set = new LineDataSet();
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
 
         // 折线的颜色
@@ -227,7 +228,7 @@ public class SensorPositionFragment extends Fragment {
         set.setFillAlpha(128);
         set.setFillColor(ColorTemplate.getHoloBlue());
         set.setHighLightColor(Color.GREEN);
-        set.setValueTextColor(Color.WHITE);
+        set.setValueTextColor(Color.BLACK);
         set.setValueTextSize(10f);
 
 

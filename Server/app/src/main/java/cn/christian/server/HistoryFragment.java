@@ -36,10 +36,11 @@ public class HistoryFragment extends Fragment {
 
     private String TAG = HistoryFragment.class.getName();
     private ListView list;
-    private SimpleAdapter adapter;
+    //    private SimpleAdapter adapter;
     private String[] listData;
     private int[] dataids;
     private List<Record> record;
+    private ArrayAdapter<String> adapter;
     private Button datePicker;
     private Calendar cal = null;
 
@@ -59,8 +60,24 @@ public class HistoryFragment extends Fragment {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         cal = Calendar.getInstance();
-                        cal.set(year, monthOfYear, dayOfMonth);
-                        record = RailWayApp.getSqlite().getRecordByDate(cal.getTime());
+//                        cal.set(year, monthOfYear, dayOfMonth);
+                        cal.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
+//                        record = RailWayApp.getSqlite().getRecordByDate(cal.getTime());
+                        record = RailWayApp.getSqlite().getRecordByInterval(cal.getTime(), DateUtil.plusDays(cal.getTime(), 1));
+                        listData = new String[record.size()];
+                        dataids = new int[record.size()];
+                        for (int i = 0; i < record.size(); i++) {
+                            Record item = record.get(i);
+                            Log.d("RECORD", item.toString());
+                            listData[i] = item.getCode();
+                            dataids[i] = item.getId();
+                        }
+
+                        adapter = new ArrayAdapter<String>(getActivity(),
+                                android.R.layout.simple_list_item_1, listData);
+
+                        list.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
                     }
                 }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));//后边三个参数为显示dialog时默认的日期，月份从0开始，0-11对应1-12个月
 
@@ -69,14 +86,7 @@ public class HistoryFragment extends Fragment {
         });
 
         Date begin = new Date();
-//        cal = Calendar.getInstance();
-//        cal.getTime();
-//        cal.setTime(begin);
-//        cal.add(Calendar.DAY_OF_MONTH, -7);
-
-//        record = RailWayApp.getSqlite().getRecordByInterval(begin, cal.getTime());
         record = RailWayApp.getSqlite().getRecordByInterval(DateUtil.plusDays(begin, -7), begin);
-//        record = RailWayApp.getSqlite().getAllRecord();
         if (record.isEmpty()) {
             return historyLayout;
         } else {
@@ -91,21 +101,26 @@ public class HistoryFragment extends Fragment {
 
 
             list.setClickable(true);
-            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            AdapterView.OnItemClickListener historyAdapterOnClicker = new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), HistoryDataActivity.class);
                     intent.setAction(Constants.SENSOR_HISTORY_DETAIL_ACTION);
+                    Log.d("HISTORY", dataids.toString());
                     intent.putExtra(Constants.SENSOR_HISTORY_DATA, dataids[position]);
+
 
                     startActivity(intent);
                 }
-            });
+            };
+            list.setOnItemClickListener(historyAdapterOnClicker);
 
 
-            list.setAdapter(new ArrayAdapter<String>(getActivity(),
-                    android.R.layout.simple_list_item_1, listData));
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_list_item_1, listData);
+
+            list.setAdapter(adapter);
         }
 
         return historyLayout;
@@ -118,13 +133,16 @@ public class HistoryFragment extends Fragment {
 
         if (!hidden) {
             Date begin = new Date();
-//            Calendar cal = Calendar.getInstance();
-//            cal.getTime();
-//            cal.setTime(begin);
-//            cal.add(Calendar.DAY_OF_MONTH, -7);
             record = RailWayApp.getSqlite().getRecordByInterval(DateUtil.plusDays(begin, -7), begin);
-//            List<Record> record = RailWayApp.getSqlite().getRecordByInterval(begin, cal.getTime());
-//            List<Record> record = RailWayApp.getSqlite().getAllRecord();
+            listData = new String[record.size()];
+            dataids = new int[record.size()];
+            for (int i = 0; i < record.size(); i++) {
+                Record item = record.get(i);
+                Log.d("RECORD", item.toString());
+                listData[i] = item.getCode();
+                dataids[i] = item.getId();
+            }
+
 
             String[] viewDatas = new String[record.size()];
             for (int i = 0; i < record.size(); i++) {
@@ -142,6 +160,9 @@ public class HistoryFragment extends Fragment {
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), HistoryDataActivity.class);
                     intent.setAction(Constants.SENSOR_HISTORY_DETAIL_ACTION);
+                    Log.d("HISTORY2", dataids.toString());
+                    Log.d("HISTORY2", "position:" + position);
+                    Log.d("HISTORY2", "dataids size:" + dataids.length);
                     intent.putExtra(Constants.SENSOR_HISTORY_DATA, dataids[position]);
 
                     startActivity(intent);
@@ -153,7 +174,6 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        cal = Calendar.getInstance(Locale.getDefault());
     }
 
 

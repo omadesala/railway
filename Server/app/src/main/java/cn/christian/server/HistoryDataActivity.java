@@ -51,12 +51,14 @@ public class HistoryDataActivity extends Activity {
         Intent intent = getIntent();
         int dataid = intent.getIntExtra(Constants.SENSOR_HISTORY_DATA, -1);
 
-//        RailWayApp.getSqlite().deleteAllRecord();
+        Log.d("DATAACTIVITY", "dataid:" + dataid);
         Record recordById = RailWayApp.getSqlite().getRecordById(dataid);
 
         if (recordById != null) {
             String data = recordById.getData();
             if (!Strings.isNullOrEmpty(data)) {
+
+                Log.d("DATAACTIVITY", "data" + data);
 
                 Iterable<String> split = Splitter.on(",").split(data);
 
@@ -136,6 +138,7 @@ public class HistoryDataActivity extends Activity {
 
     private void initLineChart() {
         mChart.setDescription("历史回看");
+        mChart.setDescriptionColor(Color.BLACK);
         mChart.setNoDataTextDescription("暂时尚无数据");
         mChart.setTouchEnabled(true);
 
@@ -154,7 +157,7 @@ public class HistoryDataActivity extends Activity {
         LineData data = new LineData();
 
         // 数据显示的颜色
-        data.setValueTextColor(Color.WHITE);
+        data.setValueTextColor(Color.BLACK);
 
         // 先增加一个空的数据，随后往里面动态添加
         mChart.setData(data);
@@ -181,7 +184,7 @@ public class HistoryDataActivity extends Activity {
 
         // x坐标轴
         XAxis xl = mChart.getXAxis();
-        xl.setTextColor(Color.WHITE);
+        xl.setTextColor(Color.BLACK);
         xl.setDrawGridLines(false);
         xl.setAvoidFirstLastClipping(true);
 
@@ -196,7 +199,7 @@ public class HistoryDataActivity extends Activity {
 
         // 图表左边的y坐标轴线
         YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setTextColor(Color.WHITE);
+        leftAxis.setTextColor(Color.BLACK);
 
 
         YAxisValueFormatter format = new MyYAxisValueFormatter();
@@ -219,7 +222,7 @@ public class HistoryDataActivity extends Activity {
         LineData data = new LineData();
 
         // 数据显示的颜色
-        data.setValueTextColor(Color.WHITE);
+        data.setValueTextColor(Color.BLACK);
 
         mChart.setData(data);
 

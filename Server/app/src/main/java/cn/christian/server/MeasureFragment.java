@@ -131,6 +131,7 @@ public class MeasureFragment extends Fragment {
             }
         });
         mChart = (LineChart) measureLayout.findViewById(R.id.chart);
+        mChart.setDescriptionColor(Color.BLACK);
         mChart.setDescription("瑞威科技");
         mChart.setNoDataTextDescription("暂时尚无数据");
         mChart.setTouchEnabled(true);
@@ -150,7 +151,7 @@ public class MeasureFragment extends Fragment {
         LineData data = new LineData();
 
         // 数据显示的颜色
-        data.setValueTextColor(Color.WHITE);
+        data.setValueTextColor(Color.BLACK);
 
         // 先增加一个空的数据，随后往里面动态添加
         mChart.setData(data);
@@ -177,7 +178,7 @@ public class MeasureFragment extends Fragment {
 
         // x坐标轴
         XAxis xl = mChart.getXAxis();
-        xl.setTextColor(Color.WHITE);
+        xl.setTextColor(Color.BLACK);
         xl.setDrawGridLines(false);
         xl.setAvoidFirstLastClipping(true);
 
@@ -192,7 +193,7 @@ public class MeasureFragment extends Fragment {
 
         // 图表左边的y坐标轴线
         YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setTextColor(Color.WHITE);
+        leftAxis.setTextColor(Color.BLACK);
 
         // 设置x轴的LimitLine
 //        LimitLine yLimitLine = new LimitLine(2.87f, "警告线");
@@ -256,7 +257,7 @@ public class MeasureFragment extends Fragment {
         LineData data = new LineData();
 
         // 数据显示的颜色
-        data.setValueTextColor(Color.WHITE);
+        data.setValueTextColor(Color.BLACK);
 
         mChart.setData(data);
 
@@ -344,20 +345,32 @@ public class MeasureFragment extends Fragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         hide = hidden;
-        SharedPreferences setting = getActivity().getSharedPreferences("setting", Activity.MODE_PRIVATE);
-        if (setting != null) {
-            minScope = setting.getFloat(Constants.minScope, 0);
-            maxScope = setting.getFloat(Constants.maxScope, 0);
+        if (!hide) {
 
-            YAxis leftAxis = mChart.getAxisLeft();
-            // 最大值
-            leftAxis.setAxisMaxValue(maxScope);
-            // 最小值
-            leftAxis.setAxisMinValue(minScope);
+            SharedPreferences setting = getActivity().getSharedPreferences("setting", Activity.MODE_PRIVATE);
+            if (setting != null) {
+                minScope = setting.getFloat(Constants.minScope, 0);
+                maxScope = setting.getFloat(Constants.maxScope, 0);
 
+                YAxis leftAxis = mChart.getAxisLeft();
+                if (maxScope != 0 && minScope != 0) {
+
+                    // 最大值
+                    leftAxis.setAxisMaxValue(maxScope);
+                    // 最小值
+                    leftAxis.setAxisMinValue(minScope);
+
+                } else {
+                    leftAxis.resetAxisMaxValue();
+                    leftAxis.resetAxisMinValue();
+                }
+                mChart.notifyDataSetChanged();
+                mChart.invalidate();
+
+//            }
+            }
         }
     }
-
 
     @Override
     public void onResume() {
@@ -367,13 +380,20 @@ public class MeasureFragment extends Fragment {
             minScope = setting.getFloat(Constants.minScope, 0);
             maxScope = setting.getFloat(Constants.maxScope, 0);
 //            sensorScopeValue = setting.getFloat(SettingFragment.sensorScope, 0);
-
             YAxis leftAxis = mChart.getAxisLeft();
-            // 最大值
-            leftAxis.setAxisMaxValue(maxScope);
-            // 最小值
-            leftAxis.setAxisMinValue(minScope);
+            if (maxScope != 0 && minScope != 0) {
 
+                // 最大值
+                leftAxis.setAxisMaxValue(maxScope);
+                // 最小值
+                leftAxis.setAxisMinValue(minScope);
+
+            } else {
+                leftAxis.resetAxisMaxValue();
+                leftAxis.resetAxisMinValue();
+            }
+            mChart.notifyDataSetChanged();
+            mChart.invalidate();
         }
     }
 
@@ -390,6 +410,10 @@ public class MeasureFragment extends Fragment {
                     Log.d("MEASURE", "DATA RECEIVED !!! length = " + distances.length);
                     Log.d("MEASURE", "DATA: " + distances.toString());
                     addEntrys(distances, hide);
+                    Toast.makeText(
+                            getActivity(),
+                            "收到测量数据", Toast.LENGTH_LONG).
+                            show();
 
 //                    List<Float> data = Lists.newArrayList();
 //                    for (int i = 0; i < distances.length; i++) {
