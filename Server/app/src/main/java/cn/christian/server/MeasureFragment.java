@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -261,6 +262,8 @@ public class MeasureFragment extends Fragment {
 
         mChart.setData(data);
 
+        Paint paint = mChart.getPaint(0);
+//        paint.
 
         LineDataSet set = createLineDataSet();
         data.addDataSet(set);

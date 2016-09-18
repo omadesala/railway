@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -23,6 +24,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +42,9 @@ public class HistoryDataActivity extends Activity {
 
     private ImageButton back;
     private LineChart mChart;
+
+    int widthPixels;
+    int heightPixels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,12 +101,21 @@ public class HistoryDataActivity extends Activity {
         });
 
         initLineChart();
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        widthPixels = dm.widthPixels;
+        heightPixels = dm.heightPixels;
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        widthPixels = dm.widthPixels;
+        heightPixels = dm.heightPixels;
 
         Intent intent = getIntent();
         int dataid = intent.getIntExtra(Constants.SENSOR_HISTORY_DATA, -1);
@@ -137,8 +151,18 @@ public class HistoryDataActivity extends Activity {
     }
 
     private void initLineChart() {
-        mChart.setDescription("历史回看");
+
+        mChart.setDescription("历史回看 第二行");
         mChart.setDescriptionColor(Color.BLACK);
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int widthPixels = dm.widthPixels;
+        int heightPixels = dm.heightPixels;
+        Log.d("DATA", "x: " + widthPixels + " y:" + heightPixels);
+        mChart.setDescriptionPosition(widthPixels - 100, heightPixels / 6);
+
+
         mChart.setNoDataTextDescription("暂时尚无数据");
         mChart.setTouchEnabled(true);
 
@@ -226,6 +250,7 @@ public class HistoryDataActivity extends Activity {
 
         mChart.setData(data);
 
+
         LineDataSet set = createLineDataSet();
         data.addDataSet(set);
 
@@ -243,18 +268,24 @@ public class HistoryDataActivity extends Activity {
         mChart.notifyDataSetChanged();
 
         // 当前统计图表中最多在x轴坐标线上显示的总量
-        mChart.setVisibleXRangeMaximum(20);
+        mChart.setVisibleXRangeMaximum(250);
 
         Legend l = mChart.getLegend();
 
-        String[] labels = {"最大值: " + DataUtil.getMax(distance)};
-        int[] colors = {Color.RED};
+        String[] labels = {"历史回看"};
+        int[] colors = {Color.BLUE};
         l.setCustom(colors, labels);
         l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
-        l.setForm(Legend.LegendForm.LINE);
-        l.setTextColor(Color.RED);
+        l.setForm(Legend.LegendForm.SQUARE);
+        l.setTextColor(Color.BLUE);
 
 
+        DecimalFormat mFormat = new DecimalFormat("#.###");
+        float yMax = mChart.getYMax();
+        float yMin = mChart.getYMin();
+//        Log.d("DATA", "yMax: " + mFormat.format(yMax) + "yMin: " + yMin);
+        mChart.setDescription("最大值: " + mFormat.format(yMax) + " 最小值: " + mFormat.format(yMin));
+        mChart.setDescriptionTextSize(20.0f);
         // y坐标轴线最大值
         // mChart.setVisibleYRange(30, AxisDependency.LEFT);
 
@@ -277,9 +308,9 @@ public class HistoryDataActivity extends Activity {
         // 折线的颜色
         set.setColor(ColorTemplate.getHoloBlue());
 
-        set.setCircleColor(Color.WHITE);
-        set.setLineWidth(10f);
-        set.setCircleSize(5f);
+//        set.setCircleColor(Color.WHITE);
+//        set.setLineWidth(2f);
+//        set.setCircleSize(1f);
         set.setFillAlpha(128);
         set.setFillColor(ColorTemplate.getHoloBlue());
         set.setHighLightColor(Color.GREEN);
@@ -288,10 +319,10 @@ public class HistoryDataActivity extends Activity {
         set.setValueTextSize(10f);
 
 
-        set.setLineWidth(1.75f); // 线宽
-        set.setCircleSize(3f);// 显示的圆形大小
+        set.setLineWidth(0.75f); // 线宽
+        set.setCircleSize(1f);// 显示的圆形大小
         set.setColor(Color.BLUE);// 显示颜色
-        set.setCircleColor(Color.WHITE);// 圆形的颜色
+        set.setCircleColor(Color.MAGENTA);// 圆形的颜色
         set.setHighLightColor(Color.WHITE); // 高亮的线的颜色
 
 

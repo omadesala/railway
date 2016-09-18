@@ -12,7 +12,7 @@
         jar="E:\workspace\railway\Server\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
         jumboMode="true"
         revision="24.0.2"
-        sha1="597547d0d90bde5c233f82a7752c7e5edfa76d4c">
+        sha1="de3163f09824add3f773a6065e0b3bbd67b1814f">
         <dex dex="E:\workspace\railway\Server\app\build\intermediates\pre-dexed\debug\instant-run_15625f61a942ab0ba084a46c7e31af69e39e2005.jar" />
     </item>
     <item
@@ -26,7 +26,7 @@
         jar="E:\workspace\railway\Server\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
         jumboMode="true"
         revision="24.0.2"
-        sha1="7f3fdf531d6c3d4cd693236f1cdcca1f05c3031a">
+        sha1="e64fa0a40227508c0b713ffc38c0fc15756f3b74">
         <dex dex="E:\workspace\railway\Server\app\build\intermediates\pre-dexed\debug\instant-run-bootstrap_dc3cd161606d16304200ceb4a9f9674b6d31ba76.jar" />
     </item>
 
