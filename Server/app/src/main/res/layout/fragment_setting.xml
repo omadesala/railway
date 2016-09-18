@@ -20,9 +20,10 @@
             android:id="@+id/forwrapcontent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_gravity="fill_vertical"
+            android:gravity="fill_vertical"
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
 
             <LinearLayout
                 android:id="@+id/linearLayoutMaxScope1"
