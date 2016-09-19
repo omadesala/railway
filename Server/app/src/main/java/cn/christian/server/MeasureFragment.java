@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
 import java.security.Timestamp;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +60,8 @@ public class MeasureFragment extends Fragment {
     private static float maxScope;
     private float[] distances = null;
     private boolean saved = false;
+    private int widthPixels;
+    private int heightPixels;
     private String DATA_SAVED_STATUS = "DATA_SAVED_STATUS";
 
     @Override
@@ -136,6 +140,15 @@ public class MeasureFragment extends Fragment {
         mChart.setDescription("瑞威科技");
         mChart.setNoDataTextDescription("暂时尚无数据");
         mChart.setTouchEnabled(true);
+
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        widthPixels = dm.widthPixels;
+        heightPixels = dm.heightPixels;
+        Log.d("DATA", "x: " + widthPixels + " y:" + heightPixels);
+        mChart.setDescriptionPosition(widthPixels - 100, heightPixels / 6);
+
 
         // 可拖曳
         mChart.setDragEnabled(true);
@@ -248,6 +261,12 @@ public class MeasureFragment extends Fragment {
             minScope = setting.getFloat(Constants.minScope, 0);
             maxScope = setting.getFloat(Constants.maxScope, 0);
         }
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        widthPixels = dm.widthPixels;
+        heightPixels = dm.heightPixels;
+
     }
 
 
@@ -262,8 +281,6 @@ public class MeasureFragment extends Fragment {
 
         mChart.setData(data);
 
-        Paint paint = mChart.getPaint(0);
-//        paint.
 
         LineDataSet set = createLineDataSet();
         data.addDataSet(set);
@@ -281,7 +298,7 @@ public class MeasureFragment extends Fragment {
         mChart.notifyDataSetChanged();
 
         // 当前统计图表中最多在x轴坐标线上显示的总量
-        mChart.setVisibleXRangeMaximum(20);
+        mChart.setVisibleXRangeMaximum(250);
 
         Legend l = mChart.getLegend();
 
@@ -292,7 +309,11 @@ public class MeasureFragment extends Fragment {
         l.setForm(Legend.LegendForm.LINE);
         l.setTextColor(Color.RED);
 
-
+        DecimalFormat mFormat = new DecimalFormat("#.###");
+        float yMax = mChart.getYMax();
+        float yMin = mChart.getYMin();
+        mChart.setDescription("最大值: " + mFormat.format(yMax) + " 最小值: " + mFormat.format(yMin));
+        mChart.setDescriptionTextSize(20.0f);
         // y坐标轴线最大值
         // mChart.setVisibleYRange(30, AxisDependency.LEFT);
 
@@ -315,9 +336,9 @@ public class MeasureFragment extends Fragment {
         // 折线的颜色
         set.setColor(ColorTemplate.getHoloBlue());
 
-        set.setCircleColor(Color.WHITE);
-        set.setLineWidth(10f);
-        set.setCircleSize(5f);
+//        set.setCircleColor(Color.WHITE);
+//        set.setLineWidth(10f);
+//        set.setCircleSize(5f);
         set.setFillAlpha(128);
         set.setFillColor(ColorTemplate.getHoloBlue());
         set.setHighLightColor(Color.GREEN);
@@ -326,10 +347,10 @@ public class MeasureFragment extends Fragment {
         set.setValueTextSize(10f);
 
 
-        set.setLineWidth(1.75f); // 线宽
-        set.setCircleSize(3f);// 显示的圆形大小
+        set.setLineWidth(0.75f); // 线宽
+        set.setCircleSize(1f);// 显示的圆形大小
         set.setColor(Color.BLUE);// 显示颜色
-        set.setCircleColor(Color.WHITE);// 圆形的颜色
+        set.setCircleColor(Color.MAGENTA);// 圆形的颜色
         set.setHighLightColor(Color.WHITE); // 高亮的线的颜色
 
 
@@ -373,7 +394,14 @@ public class MeasureFragment extends Fragment {
 
 //            }
             }
+        } else {
+            DisplayMetrics dm = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+            widthPixels = dm.widthPixels;
+            heightPixels = dm.heightPixels;
         }
+
+
     }
 
     @Override
@@ -399,6 +427,11 @@ public class MeasureFragment extends Fragment {
             mChart.notifyDataSetChanged();
             mChart.invalidate();
         }
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        widthPixels = dm.widthPixels;
+        heightPixels = dm.heightPixels;
     }
 
     class DataReceiver extends BroadcastReceiver {

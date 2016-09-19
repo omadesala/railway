@@ -30,6 +30,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     private static final String KEY_CODE = "code";
     private static final String KEY_DATA = "data";
     private static final String KEY_DATE = "createdate";
+    private static final String DATA_HASH = "datahash";
 
 
     private static final int VERSION = 1;
@@ -37,9 +38,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     private Context context;
     //建表语句
-    private static final String CREATE_TABLE = "create table" + TABLE_NAME + "(" + KEY_ID
-            + " integer primary key autoincrement, " + KEY_CODE + " text not null,  " + KEY_DATA + " text not null," + KEY_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP"
-            + ")";
+//    private static final String CREATE_TABLE = "create table" + TABLE_NAME + "(" + KEY_ID
+//            + " integer primary key autoincrement, " + KEY_CODE + " text not null,  " + KEY_DATA + " text not null," + DATA_HASH + " text not null," + KEY_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP"
+//            + ")";
 
 
     //三个不同参数的构造函数
@@ -60,11 +61,14 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         this(context, name, null, version);
     }
 
+
+
     //创建数据库
+    @Override
     public void onCreate(SQLiteDatabase db) {
         Log.i(SWORD, "create a table");
         //创建数据库sql语句
-        String sql = "CREATE TABLE IF NOT EXISTS record(id integer primary key autoincrement,code varchar(20),data varchar(2048),createdate datetime DEFAULT CURRENT_TIMESTAMP)";
+        String sql = "CREATE TABLE IF NOT EXISTS record(id integer primary key autoincrement,code varchar(20),datahash varchar(50),data varchar(2048),createdate datetime DEFAULT CURRENT_TIMESTAMP)";
         //执行创建数据库操作
         db.execSQL(sql);
     }
@@ -75,17 +79,42 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         Log.i(SWORD, "update a Database");
     }
 
+    public void dropTable(String tableName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + tableName);
+    }
+
     public void addRecord(Record item) {
 
         SQLiteDatabase db = this.getWritableDatabase();
+
+        String datahash = DataUtil.md5(item.getData());
+
+        if (isRecordExist(datahash)) {
+            updateCode(datahash, item.getCode());
+            return;
+        }
 
         //使用ContentValues添加数据
         ContentValues values = new ContentValues();
         values.put(KEY_CODE, item.getCode());
         values.put(KEY_DATA, item.getData());
         values.put(KEY_DATE, item.getCreatedate());
+        values.put(DATA_HASH, datahash);
+
         db.insert(TABLE_NAME, null, values);
         db.close();
+    }
+
+
+    public void updateCode(String datahash, String code) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_CODE, code);
+        String whereClause = "datahash=?";//修改条件
+        String[] whereArgs = {datahash};//修改条件的参数
+        db.update("record", cv, whereClause, whereArgs);//执行修改
     }
 
     public List<Record> getRecordByDate(Date date) {
@@ -145,6 +174,20 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             item.setCreatedate(cursor.getInt(3));
         }
         return item;
+    }
+
+    public boolean isRecordExist(String datahash) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery("select count(*) from record where datahash = ?", new String[]{datahash});
+        Record item = new Record();
+        if (cursor.moveToFirst()) {
+            int count = cursor.getInt(0);
+            if (count >= 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void deleteAllRecord() {

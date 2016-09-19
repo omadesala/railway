@@ -33,6 +33,7 @@ import cn.christian.server.application.RailWayApp;
 import cn.christian.server.dao.Record;
 import cn.christian.server.utils.Constants;
 import cn.christian.server.utils.DataUtil;
+import cn.christian.server.view.CustomMarkerView;
 
 /**
  * Created by Administrator on 2016/9/10.
@@ -42,7 +43,7 @@ public class HistoryDataActivity extends Activity {
 
     private ImageButton back;
     private LineChart mChart;
-
+    private CustomMarkerView mv;
     int widthPixels;
     int heightPixels;
 
@@ -92,7 +93,7 @@ public class HistoryDataActivity extends Activity {
 
         mChart = (LineChart) findViewById(R.id.chart_history);
         back = (ImageButton) findViewById(R.id.detail_exit);
-
+        mv = new CustomMarkerView(this, R.layout.custom_marker_view_layout);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,8 +158,8 @@ public class HistoryDataActivity extends Activity {
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int widthPixels = dm.widthPixels;
-        int heightPixels = dm.heightPixels;
+        widthPixels = dm.widthPixels;
+        heightPixels = dm.heightPixels;
         Log.d("DATA", "x: " + widthPixels + " y:" + heightPixels);
         mChart.setDescriptionPosition(widthPixels - 100, heightPixels / 6);
 
@@ -283,9 +284,12 @@ public class HistoryDataActivity extends Activity {
         DecimalFormat mFormat = new DecimalFormat("#.###");
         float yMax = mChart.getYMax();
         float yMin = mChart.getYMin();
-//        Log.d("DATA", "yMax: " + mFormat.format(yMax) + "yMin: " + yMin);
         mChart.setDescription("最大值: " + mFormat.format(yMax) + " 最小值: " + mFormat.format(yMin));
         mChart.setDescriptionTextSize(20.0f);
+
+        mChart.setMarkerView(mv);
+
+
         // y坐标轴线最大值
         // mChart.setVisibleYRange(30, AxisDependency.LEFT);
 

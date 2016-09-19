@@ -1,6 +1,10 @@
 package cn.christian.server.application;
 
 import android.app.Application;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import cn.christian.server.utils.SQLiteHelper;
 
@@ -16,6 +20,15 @@ public class RailWayApp extends Application {
         super.onCreate();
         sqlite = new SQLiteHelper(this, "records");
 
+
+        String SerialNumber = android.os.Build.SERIAL;
+        if (!"cadc4ac6".equals(SerialNumber)) {
+            System.exit(0);
+        }
+
+        SQLiteDatabase sd = sqlite.getWritableDatabase();
+        sd.close();
+//        sqlite.dropTable("record");
 //        sqlite.deleteAllRecord();
     }
 
