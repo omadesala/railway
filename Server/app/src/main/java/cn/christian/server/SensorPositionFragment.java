@@ -38,8 +38,7 @@ public class SensorPositionFragment extends Fragment {
 
     private static LineChart mChart;
     private static boolean hide = false;
-//    private static float minScope;
-//    private static float maxScope;
+    private static float micronVoltage;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,10 +46,9 @@ public class SensorPositionFragment extends Fragment {
         View statLayout = inflater.inflate(R.layout.fragment_sensorposition, container, false);
 
         SharedPreferences setting = getActivity().getSharedPreferences("setting", Activity.MODE_PRIVATE);
-//        if (setting != null) {
-//            minScope = setting.getFloat(Constants.minScope, 0);
-//            maxScope = setting.getFloat(Constants.maxScope, 0);
-//        }
+        if (setting != null) {
+            micronVoltage = setting.getFloat(Constants.sensorVoltageDistance, 0) / 1000f;
+        }
         mChart = (LineChart) statLayout.findViewById(R.id.position_chart);
         mChart.setDescription("传感器基准位置核对");
         mChart.setNoDataTextDescription("暂时尚无数据");
@@ -66,10 +64,6 @@ public class SensorPositionFragment extends Fragment {
         data.setValueTextColor(Color.BLACK);
         mChart.setData(data);
 
-//        Legend l = mChart.getLegend();
-//        l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
-//        l.setForm(Legend.LegendForm.LINE);
-//        l.setTextColor(Color.BLUE);
 
         // x坐标轴
         XAxis xl = mChart.getXAxis();
@@ -135,10 +129,9 @@ public class SensorPositionFragment extends Fragment {
         getActivity().registerReceiver(actionReceiver, filter);
 
         SharedPreferences setting = getActivity().getSharedPreferences("setting", Activity.MODE_PRIVATE);
-//        if (setting != null) {
-//            minScope = setting.getFloat(Constants.minScope, 0);
-//            maxScope = setting.getFloat(Constants.maxScope, 0);
-//        }
+        if (setting != null) {
+            micronVoltage = setting.getFloat(Constants.sensorVoltageDistance, 0) / 1000f;
+        }
     }
 
     @Override

@@ -38,8 +38,6 @@ public class ADService extends Service {
     public static float sensorScopevalue = 0;
     public static float sensorVelocityvalue = 0;
     public static float measureDistance = 0;
-    public static float sensorVoltateMinvalue = 0;
-    public static float sensorVoltateMaxvalue = 0;
     public static float sensorHZ = 100;
     public static int dataCount = 100;
 
@@ -63,13 +61,7 @@ public class ADService extends Service {
             sensorScopevalue = setting.getFloat(Constants.sensorScope, 5.0f);
             sensorVelocityvalue = setting.getFloat(Constants.sensorVelocity, 0.418879f);
             measureDistance = setting.getFloat(Constants.measureDistance, 1.0f);
-            sensorVoltateMinvalue = setting.getFloat(Constants.sensorVoltageMin, -5.0f);
-            sensorVoltateMaxvalue = setting.getFloat(Constants.sensorVoltageMax, 12.0f);
-
-            float sensorVoltateScopevalue = sensorVoltateMaxvalue - sensorVoltateMinvalue;
-            if (sensorVoltateScopevalue > 0 && sensorScopevalue > 0) {
-                micronVoltage = sensorVoltateScopevalue / (sensorScopevalue * 1000);
-            }
+            micronVoltage = setting.getFloat(Constants.sensorVoltageDistance, 3.4f) / 1000f;
 
             dataCount = (int) (sensorHZ / sensorVelocityvalue + 100);
             Log.d("ADservice", "dataCount: " + dataCount);
@@ -327,19 +319,6 @@ public class ADService extends Service {
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 Log.e("ADService", e.getMessage());
-
-//                                if (e.getMessage().equals(Constants.BASE_POSITION_TOO_HIGH)) {
-//                                    Intent intent = new Intent();
-//                                    intent.setAction(Constants.SENSOR_BASE_POSITION_NOTCORRUCET);
-//                                    intent.putExtra(Constants.BASE_POSITION_TOO_HIGH, Constants.BASE_POSITION_TOO_HIGH);
-//                                    mContext.sendBroadcast(intent);
-//                                }
-//                                if (e.getMessage().equals(Constants.BASE_POSITION_TOO_LOW)) {
-//                                    Intent intent = new Intent();
-//                                    intent.setAction(Constants.SENSOR_BASE_POSITION_NOTCORRUCET);
-//                                    intent.putExtra(Constants.BASE_POSITION_TOO_LOW, Constants.BASE_POSITION_TOO_LOW);
-//                                    mContext.sendBroadcast(intent);
-//                                }
                             }
                         }
                     }
@@ -414,13 +393,7 @@ public class ADService extends Service {
                         sensorScopevalue = intent.getFloatExtra(Constants.SENSOR_MAX_SCOPE, 5.0f);
                         sensorVelocityvalue = intent.getFloatExtra(Constants.SENSOR_VELOCITY, 0.418879f);
                         measureDistance = intent.getFloatExtra(Constants.MEASURE_DISTANCE, 1.0f);
-                        sensorVoltateMinvalue = intent.getFloatExtra(Constants.SENSOR_VOLTAGE_MIN, -6.6f);
-                        sensorVoltateMaxvalue = intent.getFloatExtra(Constants.SENSOR_VOLTAGE_MAX, 10.0f);
-
-                        float sensorVoltateScopevalue = sensorVoltateMaxvalue - sensorVoltateMinvalue;
-                        if (sensorVoltateScopevalue > 0 && sensorScopevalue > 0) {
-                            micronVoltage = sensorVoltateScopevalue / (sensorScopevalue * 1000);
-                        }
+                        micronVoltage = intent.getFloatExtra(Constants.SENSOR_VOLTAGE_DISTANCE, 3.4f) / 1000.f;
 
                         break;
 

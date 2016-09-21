@@ -10,6 +10,7 @@ public class Constants {
     public static final String measureDistance = "MEASURE_DISTANCE";
     public static final String sensorVoltageMin = "SENSOR_VOLTAGE_MIN";
     public static final String sensorVoltageMax = "SENSOR_VOLTAGE_MAX";
+    public static final String sensorVoltageDistance = "SENSOR_VOLTAGE_DISTANCE";
 
     public static final String maxScope = "MAXSCOPE";
     public static final String minScope = "MINSCOPE";
@@ -21,6 +22,7 @@ public class Constants {
     public static final String SENSOR_VELOCITY = "SENSOR_VELOCITY";
     public static final String MEASURE_DISTANCE = "MEASURE_DISTANCE";
     public static final String SENSOR_VOLTAGE_MIN = "SENSOR_VOLTAGE_MIN";
+    public static final String SENSOR_VOLTAGE_DISTANCE = "SENSOR_VOLTAGE_DISTANCE";
     public static final String SENSOR_VOLTAGE_MAX = "SENSOR_VOLTAGE_MAX";
     public static final String SENSOR_DATA = "MEASURE_DISTANCE";
     public static final String SENSOR_POSITION_DATA = "MEASURE_DISTANCE";

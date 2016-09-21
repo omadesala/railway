@@ -9,6 +9,7 @@ public class Record implements Serializable {
 
     private int id;
     private String code;
+    private String datahash;
     private String data;
 
     public long getCreatedate() {
@@ -46,11 +47,21 @@ public class Record implements Serializable {
         this.code = code;
     }
 
+
+    public String getDatahash() {
+        return datahash;
+    }
+
+    public void setDatahash(String datahash) {
+        this.datahash = datahash;
+    }
+
     @Override
     public String toString() {
         return "Record{" +
                 "id=" + id +
                 ", code='" + code + '\'' +
+                ", datahash='" + datahash + '\'' +
                 ", data='" + data + '\'' +
                 ", createdate=" + createdate +
                 '}';

@@ -52,30 +52,23 @@ import cn.christian.server.utils.DataUtil;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MeasureFragment extends Fragment {
 
-    //    public final static int MSG_DATA_RECEIVED = 0;
     private static LineChart mChart;
     private static Button save;
     private static boolean hide = false;
     private static float minScope;
     private static float maxScope;
     private float[] distances = null;
-    private boolean saved = false;
     private int widthPixels;
     private int heightPixels;
-    private String DATA_SAVED_STATUS = "DATA_SAVED_STATUS";
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(DATA_SAVED_STATUS, saved);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        if (savedInstanceState != null) {
-            saved = savedInstanceState.getBoolean(DATA_SAVED_STATUS);
-        }
 
         View measureLayout = inflater.inflate(R.layout.fragment_measure, container, false);
 
@@ -93,15 +86,6 @@ public class MeasureFragment extends Fragment {
                     return;
                 }
 
-                if (saved) {
-                    Toast.makeText(
-                            getActivity(),
-                            "数据已保存过", Toast.LENGTH_LONG).
-                            show();
-                    return;
-                }
-
-
                 List<Float> data = Lists.newArrayList();
                 for (int i = 0; i < distances.length; i++) {
                     data.add(distances[i]);
@@ -115,7 +99,6 @@ public class MeasureFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        saved = true;
                         Record item = new Record();
                         item.setCode(code.getText().toString());
                         Log.d("DISTANCE SAVE", dataStr);
@@ -246,10 +229,6 @@ public class MeasureFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null) {
-            saved = savedInstanceState.getBoolean(DATA_SAVED_STATUS);
-        }
-
         DataReceiver actionReceiver = new DataReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Constants.SENSOR_DATA_COMMING);
@@ -302,12 +281,12 @@ public class MeasureFragment extends Fragment {
 
         Legend l = mChart.getLegend();
 
-        String[] labels = {"最大值:" + DataUtil.getMax(distance)};
+        String[] labels = {"当前测量值"};
         int[] colors = {Color.BLUE};
         l.setCustom(colors, labels);
         l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
-        l.setForm(Legend.LegendForm.LINE);
-        l.setTextColor(Color.RED);
+        l.setForm(Legend.LegendForm.SQUARE);
+        l.setTextColor(Color.BLUE);
 
         DecimalFormat mFormat = new DecimalFormat("#.###");
         float yMax = mChart.getYMax();
@@ -411,7 +390,6 @@ public class MeasureFragment extends Fragment {
         if (setting != null) {
             minScope = setting.getFloat(Constants.minScope, 0);
             maxScope = setting.getFloat(Constants.maxScope, 0);
-//            sensorScopeValue = setting.getFloat(SettingFragment.sensorScope, 0);
             YAxis leftAxis = mChart.getAxisLeft();
             if (maxScope != 0 && minScope != 0) {
 
@@ -443,7 +421,7 @@ public class MeasureFragment extends Fragment {
             if (action.equals(Constants.SENSOR_DATA_COMMING)) {
                 distances = intent.getFloatArrayExtra(Constants.SENSOR_DATA);
                 if (distances != null) {
-                    saved = false;
+//                    saved = false;
                     Log.d("MEASURE", "DATA RECEIVED !!! length = " + distances.length);
                     Log.d("MEASURE", "DATA: " + distances.toString());
                     addEntrys(distances, hide);

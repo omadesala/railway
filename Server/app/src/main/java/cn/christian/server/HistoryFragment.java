@@ -56,14 +56,18 @@ public class HistoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 cal = Calendar.getInstance();
-                DatePickerDialog dialog = new DatePickerDialog(getActivity(), 0, new DatePickerDialog.OnDateSetListener() {
+
+                DoubleDatePickerDialog doubleDialog = new DoubleDatePickerDialog(getActivity(), new DoubleDatePickerDialog.OnDateSetListener() {
                     @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                    public void onDateSet(DatePicker startDatePicker, int startYear, int startMonthOfYear, int startDayOfMonth, DatePicker endDatePicker, int endYear, int endMonthOfYear, int endDayOfMonth) {
+
                         cal = Calendar.getInstance();
-//                        cal.set(year, monthOfYear, dayOfMonth);
-                        cal.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
-//                        record = RailWayApp.getSqlite().getRecordByDate(cal.getTime());
-                        record = RailWayApp.getSqlite().getRecordByInterval(cal.getTime(), DateUtil.plusDays(cal.getTime(), 1));
+                        cal.set(startYear, startMonthOfYear, startDayOfMonth, 0, 0, 0);
+                        Date beginDate = cal.getTime();
+                        cal.set(endYear, endMonthOfYear, endDayOfMonth, 0, 0, 0);
+                        Date endDate = cal.getTime();
+
+                        record = RailWayApp.getSqlite().getRecordByInterval(beginDate, endDate);
                         listData = new String[record.size()];
                         dataids = new int[record.size()];
                         for (int i = 0; i < record.size(); i++) {
@@ -78,10 +82,37 @@ public class HistoryFragment extends Fragment {
 
                         list.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
-                    }
-                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));//后边三个参数为显示dialog时默认的日期，月份从0开始，0-11对应1-12个月
 
-                dialog.show();
+                    }
+                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+
+                doubleDialog.show();
+
+//                DatePickerDialog dialog = new DatePickerDialog(getActivity(), 0, new DatePickerDialog.OnDateSetListener() {
+//                    @Override
+//                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+//                        cal = Calendar.getInstance();
+//                        cal.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
+////                        record = RailWayApp.getSqlite().getRecordByDate(cal.getTime());
+//                        record = RailWayApp.getSqlite().getRecordByInterval(cal.getTime(), DateUtil.plusDays(cal.getTime(), 1));
+//                        listData = new String[record.size()];
+//                        dataids = new int[record.size()];
+//                        for (int i = 0; i < record.size(); i++) {
+//                            Record item = record.get(i);
+//                            Log.d("RECORD", item.toString());
+//                            listData[i] = item.getCode();
+//                            dataids[i] = item.getId();
+//                        }
+//
+//                        adapter = new ArrayAdapter<String>(getActivity(),
+//                                android.R.layout.simple_list_item_1, listData);
+//
+//                        list.setAdapter(adapter);
+//                        adapter.notifyDataSetChanged();
+//                    }
+//                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));//后边三个参数为显示dialog时默认的日期，月份从0开始，0-11对应1-12个月
+//
+//                dialog.show();
             }
         });
 

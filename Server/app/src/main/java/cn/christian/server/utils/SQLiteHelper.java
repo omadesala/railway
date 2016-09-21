@@ -62,7 +62,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
 
-
     //创建数据库
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -133,8 +132,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             Record item = new Record();
             item.setId(cursor.getInt(0));
             item.setCode(cursor.getString(1));
-            item.setData(cursor.getString(2));
-            item.setCreatedate(cursor.getInt(3));
+            item.setDatahash(cursor.getString(2));
+            item.setData(cursor.getString(3));
+            item.setCreatedate(cursor.getInt(4));
             rets.add(item);
         } while (cursor.moveToNext());
         return rets;
@@ -155,8 +155,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             Record item = new Record();
             item.setId(cursor.getInt(0));
             item.setCode(cursor.getString(1));
-            item.setData(cursor.getString(2));
-            item.setCreatedate(cursor.getInt(3));
+            item.setDatahash(cursor.getString(2));
+            item.setData(cursor.getString(3));
+            item.setCreatedate(cursor.getInt(4));
             rets.add(item);
         } while (cursor.moveToNext());
         return rets;
@@ -168,10 +169,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("select * from record where id = ?", new String[]{String.valueOf(id)});
         Record item = new Record();
         if (cursor.moveToFirst()) {
+
             item.setId(cursor.getInt(0));
             item.setCode(cursor.getString(1));
-            item.setData(cursor.getString(2));
-            item.setCreatedate(cursor.getInt(3));
+            item.setDatahash(cursor.getString(2));
+            item.setData(cursor.getString(3));
+            item.setCreatedate(cursor.getInt(4));
         }
         return item;
     }
@@ -212,8 +215,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             Record item = new Record();
             item.setId(cursor.getInt(0));
             item.setCode(cursor.getString(1));
-            item.setData(cursor.getString(2));
-            item.setCreatedate(cursor.getInt(3));
+            item.setDatahash(cursor.getString(2));
+            item.setData(cursor.getString(3));
+            item.setCreatedate(cursor.getInt(4));
             rets.add(item);
         } while (cursor.moveToNext());
         return rets;

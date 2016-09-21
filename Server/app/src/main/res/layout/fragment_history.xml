@@ -22,7 +22,7 @@
             android:background="@color/darkorchid"
             android:paddingBottom="5dp"
             android:paddingTop="5dp"
-            android:text="选择日期" />
+            android:text="选择日期范围" />
 
         <ListView
             android:id="@id/android:list"

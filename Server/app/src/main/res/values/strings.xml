@@ -6,6 +6,7 @@
     <string name="sensor_scope">传感器量程(mm)</string>
     <string name="sensor_voltage_min">传感器电压下限</string>
     <string name="sensor_voltage_max">传感器电压上限</string>
+    <string name="sensor_distance_voltage">毫米电压(v/mm)</string>
     <string name="sensor_velocity">移动速度(m/s)</string>
     <string name="measure_distance">测量长度 (m) </string>
     <string name="measure_scan">扫描模式</string>
