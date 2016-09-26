@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 android {
-    compileSdkVersion 15
+    compileSdkVersion 19
     buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "cn.christian.server"
-        minSdkVersion 15
-        targetSdkVersion 10
+        minSdkVersion 19
+        targetSdkVersion 19
     }
     buildTypes {
         release {
@@ -19,6 +19,7 @@ android {
 
 dependencies {
     compile 'com.google.guava:guava:15.0'
-    compile files('C:/Users/Administrator/StudioProjects/Server/libs/mpandroidchartlibrary-2-1-6.jar')
+    compile files('../libs/mpandroidchartlibrary-2-1-6.jar')
+    //compile files('C:/Users/Administrator/StudioProjects/Server/libs/mpandroidchartlibrary-2-1-6.jar')
 }
 
