@@ -2,10 +2,13 @@ package cn.christian.server.application;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import cn.christian.server.ADSocketService;
+import cn.christian.server.MainActivity;
 import cn.christian.server.utils.SQLiteHelper;
 
 /**
@@ -28,6 +31,10 @@ public class RailWayApp extends Application {
 
         SQLiteDatabase sd = sqlite.getWritableDatabase();
         sd.close();
+
+        Intent intent = new Intent(this, ADSocketService.class);
+        startService(intent);
+
 //        sqlite.dropTable("record");
 //        sqlite.deleteAllRecord();
     }

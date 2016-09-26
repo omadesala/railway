@@ -37,6 +37,8 @@ public class Constants {
     // DATA PARSER
     public static final String SENSOR_DATA_START_TAG = "+YAV";
     public static final String SENSOR_DATA_END_TAG = "EEFF";
+    public static final String SENSOR_CMD_STOP = "2AD00001";
+
     public static final String BASE_POSITION_TOO_HIGH = "BASE_POSITION_TOO_HIGH";
     public static final String BASE_POSITION_TOO_LOW = "BASE_POSITION_TOO_LOW";
 

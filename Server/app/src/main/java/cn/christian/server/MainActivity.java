@@ -49,7 +49,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private FragmentManager fragmentManager;
 
 
-
     private void initViews() {
 
         measureLayout = findViewById(R.id.fragment_measure);
@@ -82,16 +81,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
 
-
-        Intent intent = new Intent(MainActivity.this, ADService.class);
-        startService(intent);
-
         // 初始化布局元素
         initViews();
         fragmentManager = getFragmentManager();
         // 第一次启动时选中第0个tab
         setTabSelection(0);
-
 
 
     }
@@ -117,19 +111,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fragment_measure:
-                // 当点击了消息tab时，选中第1个tab
                 setTabSelection(0);
                 break;
             case R.id.fragment_history:
-                // 当点击了联系人tab时，选中第2个tab
                 setTabSelection(1);
                 break;
             case R.id.fragment_stat:
-                // 当点击了动态tab时，选中第3个tab
                 setTabSelection(2);
                 break;
             case R.id.fragment_setting:
-                // 当点击了设置tab时，选中第4个tab
                 setTabSelection(3);
                 break;
             default:
