@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">WIFI数据采集</string>
+    <string name="app_name">railway</string>
     <string name="history">历史数据</string>
     <string name="measure_mode">采集模式</string>
     <string name="sensor_scope">传感器量程(mm)</string>
