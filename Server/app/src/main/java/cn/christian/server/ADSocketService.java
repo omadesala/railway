@@ -7,6 +7,7 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.util.Log;
+
 import cn.christian.server.utils.Constants;
 
 import java.io.IOException;
@@ -14,6 +15,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -156,27 +159,37 @@ public class ADSocketService extends Service {
             try {
                 // establish server socket
                 int connIndex = 0;
+                byte[] msg = new byte[1024];
                 Thread connHandle = null;
-                ServerSocket serverSocket = new ServerSocket(serverListenPort);//, connectionMaxLength, InetAddress.getByName(serverIpString));
-                Log.e(TAG, "port:" + serverSocket.getLocalPort());
+                DatagramSocket udpSocket = null;
+                DatagramPacket dPacket = new DatagramPacket(msg, msg.length);
+                udpSocket = new DatagramSocket(serverListenPort);
+//                ServerSocket serverSocket = new ServerSocket(serverListenPort);//, connectionMaxLength, InetAddress.getByName(serverIpString));
+//                Log.e(TAG, "port:" + serverSocket.getLocalPort());
 
                 while (true) {
-                    Socket incoming = serverSocket.accept();
-                    if (connHandle != null) {
-                        ConnectionHandle.exit();
-                        try {
-                            connHandle.join();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+
+                    try {
+                        udpSocket.receive(dPacket);
+                        Log.i("msg sever received", new String(dPacket.getData()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    Log.e(TAG, " Connected a client!connIndex:" + connIndex + " RemoteSocketAddress:" + String.valueOf(incoming.getRemoteSocketAddress()));
-                    connHandle = new Thread(new ConnectionHandle(mContext, incoming, connIndex));
-                    connHandle.start();
+
+//                    Socket incoming = serverSocket.accept();
+//                    if (connHandle != null) {
+//                        ConnectionHandle.exit();
+//                        try {
+//                            connHandle.join();
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                    Log.e(TAG, " Connected a client!connIndex:" + connIndex + " RemoteSocketAddress:" + String.valueOf(incoming.getRemoteSocketAddress()));
+//                    connHandle = new Thread(new ConnectionHandle(mContext, incoming, connIndex));
+//                    connHandle.start();
                     connIndex++;
                 }
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }

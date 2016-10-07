@@ -87,6 +87,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         // 第一次启动时选中第0个tab
         setTabSelection(0);
 
+        Intent intent = new Intent(this, ADSocketService.class);
+        startService(intent);
 
     }
 
