@@ -179,7 +179,7 @@ public class DataParser {
         int datalength = voltage.length;
         float[] distancemm = new float[datalength];
         for (int i = 0; i < datalength; i++) {
-            distancemm[i] = ((voltage[i] / ADService.micronVoltage) / 1000.0f);
+            distancemm[i] = ((voltage[i] / ADSocketService.micronVoltage) / 1000.0f);
         }
         return distancemm;
     }
@@ -188,7 +188,7 @@ public class DataParser {
 
 //        Log.d("Parser", "get dist from voltage");
         float distancemm = .0f;
-        distancemm = (((voltage - 5) / ADService.micronVoltage) / 1000.0f);
+        distancemm = (((voltage - 5) / ADSocketService.micronVoltage) / 1000.0f);
         return distancemm;
     }
 

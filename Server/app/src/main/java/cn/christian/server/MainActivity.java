@@ -81,14 +81,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
 
+        Intent intent = new Intent(MainActivity.this, ADSocketService.class);
+        startService(intent);
         // 初始化布局元素
         initViews();
         fragmentManager = getFragmentManager();
         // 第一次启动时选中第0个tab
         setTabSelection(0);
 
-        Intent intent = new Intent(this, ADSocketService.class);
-        startService(intent);
 
     }
 

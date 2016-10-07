@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import cn.christian.server.utils.Constants;
+import cn.christian.server.utils.UDPHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -156,25 +157,26 @@ public class ADSocketService extends Service {
 
         @Override
         public void run() {
-            try {
-                // establish server socket
-                int connIndex = 0;
-                byte[] msg = new byte[1024];
-                Thread connHandle = null;
-                DatagramSocket udpSocket = null;
-                DatagramPacket dPacket = new DatagramPacket(msg, msg.length);
-                udpSocket = new DatagramSocket(serverListenPort);
+            // establish server socket
+            int connIndex = 0;
+            byte[] msg = new byte[1024];
+            Thread connHandle = null;
+//                DatagramSocket udpSocket = null;
+//                DatagramPacket dPacket = new DatagramPacket(msg, msg.length);
+//                udpSocket = new DatagramSocket(serverListenPort);
 //                ServerSocket serverSocket = new ServerSocket(serverListenPort);//, connectionMaxLength, InetAddress.getByName(serverIpString));
 //                Log.e(TAG, "port:" + serverSocket.getLocalPort());
 
-                while (true) {
+            new Thread(new UDPHelper(wifi)).start();
 
-                    try {
-                        udpSocket.receive(dPacket);
-                        Log.i("msg sever received", new String(dPacket.getData()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+//                while (true) {
+//
+//                    try {
+//                        udpSocket.receive(dPacket);
+//                        Log.i("msg sever received", new String(dPacket.getData()));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
 
 //                    Socket incoming = serverSocket.accept();
 //                    if (connHandle != null) {
@@ -188,11 +190,8 @@ public class ADSocketService extends Service {
 //                    Log.e(TAG, " Connected a client!connIndex:" + connIndex + " RemoteSocketAddress:" + String.valueOf(incoming.getRemoteSocketAddress()));
 //                    connHandle = new Thread(new ConnectionHandle(mContext, incoming, connIndex));
 //                    connHandle.start();
-                    connIndex++;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//                connIndex++;
+//            }
         }
     }
 

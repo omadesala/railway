@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
 
     <application
         android:name=".application.RailWayApp"
@@ -31,7 +32,7 @@
             android:screenOrientation="landscape" />
 
         <service
-            android:name=".ADService"
+            android:name=".ADSocketService"
             android:exported="false" />
     </application>
 </manifest> 

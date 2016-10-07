@@ -31,8 +31,7 @@ public class RailWayApp extends Application {
 
         SQLiteDatabase sd = sqlite.getWritableDatabase();
         sd.close();
-
-//        Intent intent = new Intent(this, ADSocketService.class);
+//        Intent intent = new Intent(RailWayApp.this, ADSocketService.class);
 //        startService(intent);
 
 //        sqlite.dropTable("record");
