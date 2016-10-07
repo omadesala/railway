@@ -1,7 +1,9 @@
 package cn.christian.server;
 
 import android.util.Log;
+
 import cn.christian.server.utils.DataUtil;
+
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
@@ -138,8 +140,8 @@ public class DistanceParser {
         Iterator<String> iterator = result.iterator();
         String tag = iterator.next();// TAG
         tag = tag.substring(5, 9);
-        String dataStr = iterator.next();// data0
         int datalength = Integer.parseInt(tag, 16);
+        String dataStr = iterator.next();// data0
         voltages = new Float[datalength];
 
         for (int i = 0; i < datalength; i++) {

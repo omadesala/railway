@@ -100,7 +100,7 @@ public class ADSocketService extends Service {
             //配置热点的名称(可以在名字后面加点随机数什么的)
             apConfig.SSID = "AndroidAP";
             //配置热点的密码
-            apConfig.preSharedKey = "11121111";
+            apConfig.preSharedKey = "11111111";
             //通过反射调用设置热点
             Method method = wifi.getClass().getMethod(
                     "setWifiApEnabled", WifiConfiguration.class, Boolean.TYPE);
@@ -157,41 +157,29 @@ public class ADSocketService extends Service {
 
         @Override
         public void run() {
-            // establish server socket
-            int connIndex = 0;
-            byte[] msg = new byte[1024];
-            Thread connHandle = null;
-//                DatagramSocket udpSocket = null;
-//                DatagramPacket dPacket = new DatagramPacket(msg, msg.length);
-//                udpSocket = new DatagramSocket(serverListenPort);
-//                ServerSocket serverSocket = new ServerSocket(serverListenPort);//, connectionMaxLength, InetAddress.getByName(serverIpString));
-//                Log.e(TAG, "port:" + serverSocket.getLocalPort());
 
-            new Thread(new UDPHelper(wifi)).start();
+            try {
+                // establish server socket
+                int connIndex = 0;
+                byte[] msg = new byte[1024];
+                Thread connHandle = null;
 
-//                while (true) {
-//
-//                    try {
-//                        udpSocket.receive(dPacket);
-//                        Log.i("msg sever received", new String(dPacket.getData()));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
+                ServerSocket serverSocket = new ServerSocket(serverListenPort);//, connectionMaxLength, InetAddress.getByName(serverIpString));
+                Log.e(TAG, "port:" + serverSocket.getLocalPort());
 
-//                    Socket incoming = serverSocket.accept();
-//                    if (connHandle != null) {
-//                        ConnectionHandle.exit();
-//                        try {
-//                            connHandle.join();
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                    Log.e(TAG, " Connected a client!connIndex:" + connIndex + " RemoteSocketAddress:" + String.valueOf(incoming.getRemoteSocketAddress()));
-//                    connHandle = new Thread(new ConnectionHandle(mContext, incoming, connIndex));
-//                    connHandle.start();
-//                connIndex++;
-//            }
+                while (true) {
+                    Socket incoming = serverSocket.accept();
+                    Log.e(TAG, "Connected a client!connIndex:" + connIndex + " RemoteSocketAddress:" + String.valueOf(incoming.getRemoteSocketAddress()));
+                    connHandle = new Thread(new ConnectionHandle(mContext, incoming, connIndex));
+                    connHandle.start();
+                    connIndex++;
+                }
+
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -247,7 +235,7 @@ public class ADSocketService extends Service {
                     outStream = connectedSocket.getOutputStream();
                     Scanner in = new Scanner(inStream, "UTF8");
 //                    boolean done = false;
-
+                    boolean test = true;
                     dataParser = new DistanceParser(dataCount);
 
                     StringBuffer sb = new StringBuffer();
@@ -270,6 +258,11 @@ public class ADSocketService extends Service {
                         if (token.endsWith(Constants.SENSOR_DATA_END_TAG)) {
 
                             String record = sb.toString();
+
+                            Log.d("DATA", record);
+//                            if (test)
+//                                continue;
+
                             try {
 
                                 float[] distance = dataParser.getValidateData(record);

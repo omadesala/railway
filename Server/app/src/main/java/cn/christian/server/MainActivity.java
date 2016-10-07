@@ -81,8 +81,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
 
-        Intent intent = new Intent(MainActivity.this, ADSocketService.class);
-        startService(intent);
+//        Intent intent = new Intent(MainActivity.this, ADSocketService.class);
+//        startService(intent);
         // 初始化布局元素
         initViews();
         fragmentManager = getFragmentManager();
