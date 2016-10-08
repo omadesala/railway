@@ -8,6 +8,7 @@ public class Constants {
     public static final String sensorScope = "SENSOR_SCOPE";
     public static final String sensorVelocity = "SENSOR_VELOCITY";
     public static final String measureDistance = "MEASURE_DISTANCE";
+    public static final String sensorBaseCount = "SENSOR_BASE_COUNT";
     public static final String sensorVoltageMin = "SENSOR_VOLTAGE_MIN";
     public static final String sensorVoltageMax = "SENSOR_VOLTAGE_MAX";
     public static final String sensorVoltageDistance = "SENSOR_VOLTAGE_DISTANCE";
@@ -23,6 +24,7 @@ public class Constants {
     public static final String MEASURE_DISTANCE = "MEASURE_DISTANCE";
     public static final String SENSOR_VOLTAGE_MIN = "SENSOR_VOLTAGE_MIN";
     public static final String SENSOR_VOLTAGE_DISTANCE = "SENSOR_VOLTAGE_DISTANCE";
+    public static final String SENSOR_BASE_COUNT = "SENSOR_BASE_COUNT";
     public static final String SENSOR_VOLTAGE_MAX = "SENSOR_VOLTAGE_MAX";
     public static final String SENSOR_DATA = "MEASURE_DISTANCE";
     public static final String SENSOR_POSITION_DATA = "MEASURE_DISTANCE";
@@ -37,7 +39,7 @@ public class Constants {
     // DATA PARSER
     public static final String SENSOR_DATA_START_TAG = "+YAV";
     public static final String SENSOR_DATA_END_TAG = "EEFF";
-    public static final String SENSOR_CMD_STOP = "2AD00001";
+    public static final String SENSOR_CMD_STOP = "STOP_2AD00001";
 
     public static final String BASE_POSITION_TOO_HIGH = "BASE_POSITION_TOO_HIGH";
     public static final String BASE_POSITION_TOO_LOW = "BASE_POSITION_TOO_LOW";

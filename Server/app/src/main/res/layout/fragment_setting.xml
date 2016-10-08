@@ -118,7 +118,28 @@
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal" />
             </LinearLayout>
+            <LinearLayout
+                android:id="@+id/linearLayoutBaseCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
+                <TextView
+                    android:id="@+id/measure_basecount_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="left"
+                    android:gravity="center"
+                    android:text="@string/measure_basecount"
+                    android:textColor="@color/blue" />
+
+                <EditText
+                    android:id="@+id/base_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal" />
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/linearLayoutMaxScope2"
                 android:layout_width="match_parent"

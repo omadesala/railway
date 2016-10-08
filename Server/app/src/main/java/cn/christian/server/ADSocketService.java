@@ -37,6 +37,7 @@ public class ADSocketService extends Service {
     public static float measureDistance = 0;
     public static float sensorHZ = 100;
     public static int dataCount = 100;
+    public static int baseCount = 0;
 
 
     public static float micronVoltage = 17.0f / 5000.0f;
@@ -60,6 +61,7 @@ public class ADSocketService extends Service {
             sensorVelocityvalue = setting.getFloat(Constants.sensorVelocity, 0.418879f);
             measureDistance = setting.getFloat(Constants.measureDistance, 1.0f);
             micronVoltage = setting.getFloat(Constants.sensorVoltageDistance, 3.4f) / 1000f;
+            baseCount = setting.getInt(Constants.sensorBaseCount, 0);
 
             dataCount = (int) (sensorHZ / sensorVelocityvalue);
             Log.d("ADservice", "dataCount: " + dataCount);
@@ -210,6 +212,7 @@ public class ADSocketService extends Service {
 
         private static void sendStop() {
 
+            Log.e(TAG, "send stop command");
             if (outStream != null && dataParser != null) {
 
                 dataParser.setBaseConfirm(false);
@@ -240,7 +243,7 @@ public class ADSocketService extends Service {
 
                     StringBuffer sb = new StringBuffer();
                     while (!done && in.hasNext()) {
-
+                        dataParser.setBaseDataLength(baseCount);
                         String token = in.next();
 
                         if (token.contains(Constants.SENSOR_DATA_START_TAG)) {
@@ -260,9 +263,6 @@ public class ADSocketService extends Service {
                             String record = sb.toString();
 
                             Log.d("DATA", record);
-//                            if (test)
-//                                continue;
-
                             try {
 
                                 float[] distance = dataParser.getValidateData(record);
@@ -273,7 +273,7 @@ public class ADSocketService extends Service {
                                     intent.setAction(Constants.SENSOR_DATA_COMMING);
                                     intent.putExtra(Constants.SENSOR_DATA, distance);
                                     mContext.sendBroadcast(intent);
-                                    Log.e(TAG, "send stop command");
+
                                     sendStop();
 
                                 }
@@ -331,11 +331,11 @@ public class ADSocketService extends Service {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(Constants.SENSOR_POSITION_CHECK)) {
-                boolean status = intent.getBooleanExtra(Constants.SENSOR_POSITION_CHECK, false);
-                if (ConnectionHandle.dataParser != null) {
-                    ConnectionHandle.dataParser.setBaseConfirm(status);
-                    Log.d("ADService", "停止位置校准" + status);
-                }
+//                boolean status = intent.getBooleanExtra(Constants.SENSOR_POSITION_CHECK, false);
+//                if (ConnectionHandle.dataParser != null) {
+//                    ConnectionHandle.dataParser.setBaseConfirm(status);
+//                    Log.d("ADService", "停止位置校准" + status);
+//                }
             } else {
 
                 int type = intent.getIntExtra(Constants.MSG_TYPE, -1);
@@ -347,6 +347,7 @@ public class ADSocketService extends Service {
                         sensorVelocityvalue = intent.getFloatExtra(Constants.SENSOR_VELOCITY, 0.418879f);
                         measureDistance = intent.getFloatExtra(Constants.MEASURE_DISTANCE, 1.0f);
                         micronVoltage = intent.getFloatExtra(Constants.SENSOR_VOLTAGE_DISTANCE, 3.4f) / 1000.f;
+                        baseCount = intent.getIntExtra(Constants.SENSOR_BASE_COUNT, 0);
 
                         break;
 

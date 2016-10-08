@@ -25,9 +25,9 @@ public class RailWayApp extends Application {
 
 
         String SerialNumber = android.os.Build.SERIAL;
-        if (!"cadc4ac6".equals(SerialNumber)) {
-            System.exit(0);
-        }
+//        if (!"cadc4ac6".equals(SerialNumber)) {
+//            System.exit(0);
+//        }
 
         SQLiteDatabase sd = sqlite.getWritableDatabase();
         sd.close();

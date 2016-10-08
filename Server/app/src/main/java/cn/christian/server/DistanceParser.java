@@ -24,12 +24,17 @@ public class DistanceParser {
     private static float needNumber = 250;
     private static float baseVoltage = 0.0f;
     private static float basePosition = .0f;
-    private static int baseDataLength = 10;
-
+    private int baseDataLength = 0;
     private boolean baseConfirm = false;
-
-
     private List<Float> voltageDatas = Lists.newArrayList();// 确认保留或者放弃后清空该数据
+
+    public int getBaseDataLength() {
+        return baseDataLength;
+    }
+
+    public void setBaseDataLength(int baseDataLength) {
+        baseDataLength = baseDataLength;
+    }
 
 
     public DistanceParser(int dataLength) {
@@ -45,10 +50,6 @@ public class DistanceParser {
 
     }
 
-//    public float getSensorBasePosition() {
-//        basePosition = getDistanceFromVoltage(baseVoltage);
-//        return basePosition;
-//    }
 
     public float[] getValidateData(String record) {
 
@@ -60,7 +61,7 @@ public class DistanceParser {
 
             Float[] baseData = new Float[baseDataLength];
             Float[] validData = new Float[voltage.length - baseDataLength];
-            validData = Arrays.copyOfRange(voltage, baseDataLength, voltage.length - 1);
+            validData = Arrays.copyOfRange(voltage, baseDataLength, voltage.length);
             baseData = Arrays.copyOf(voltage, baseDataLength);
             baseVoltage = getAverage(baseData);
             basePosition = getDistanceFromVoltage(baseVoltage);
@@ -112,7 +113,11 @@ public class DistanceParser {
         for (int i = 0; i < voltage.length; i++) {
             sum += voltage[i];
         }
-        return sum / voltage.length;
+        if (sum == 0f) {
+            return 0f;
+        } else {
+            return sum / voltage.length;
+        }
 
     }
 

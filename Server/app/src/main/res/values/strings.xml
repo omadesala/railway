@@ -11,6 +11,7 @@
     <string name="measure_distance">测量长度 (m) </string>
     <string name="measure_scan">扫描模式</string>
     <string name="measure_interupt">中断模式</string>
+    <string name="measure_basecount">时间偏移点数</string>
     <string name="measure_maxscope">显示上限(mm)</string>
     <string name="measure_minscope">显示下限(mm)</string>
     <string name="measure_maxvalue">传感器量程(mm)</string>

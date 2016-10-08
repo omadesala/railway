@@ -38,6 +38,7 @@ public class SettingFragment extends Fragment {
     private EditText measureDistanceEditText;
     private EditText sensorVoltageDistanceEditText;
 
+    private EditText baseCountEditText;
     private EditText minScopeEditText;
     private EditText maxScopeEditText;
 
@@ -46,6 +47,7 @@ public class SettingFragment extends Fragment {
     float sensorVelocityValue = 0.418979f;
     float measureDistanceValue = 1.0f;
     float sensorVoltageDistanceValue = 3.4f;
+    int baseCountValue = 0;
     float minScopeValue = 0.0f;
     float maxScopeValue = 0.0f;
 
@@ -73,6 +75,7 @@ public class SettingFragment extends Fragment {
 
         measureDistanceEditText = (EditText) settingLayout.findViewById(R.id.measure_distance);
 
+        baseCountEditText = (EditText) settingLayout.findViewById(R.id.base_count);
         minScopeEditText = (EditText) settingLayout.findViewById(R.id.min_scope);
         maxScopeEditText = (EditText) settingLayout.findViewById(R.id.max_scope);
 
@@ -122,6 +125,17 @@ public class SettingFragment extends Fragment {
         });
 
 
+        baseCountEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    InputMethodManager imm = (InputMethodManager) getActivity()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(baseCountEditText.getWindowToken(), 0);
+                }
+            }
+        });
+
         maxScopeEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -132,6 +146,7 @@ public class SettingFragment extends Fragment {
                 }
             }
         });
+
         minScopeEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -156,6 +171,7 @@ public class SettingFragment extends Fragment {
                                         Editable sensorVelocityValueEdit = sensorVelocityEditText.getText();
                                         Editable measureDistanceValueEdit = measureDistanceEditText.getText();
 
+                                        Editable baseCountEdit = baseCountEditText.getText();
                                         Editable maxScopeEdit = maxScopeEditText.getText();
                                         Editable minScopeEdit = minScopeEditText.getText();
 
@@ -164,6 +180,7 @@ public class SettingFragment extends Fragment {
                                         String sensorVelocityStr = "";
                                         String measureDistanceStr = "";
 
+                                        String baseCountStr = "";
                                         String minScopeStr = "";
                                         String maxScopeStr = "";
 
@@ -199,6 +216,12 @@ public class SettingFragment extends Fragment {
                                         }
 
 
+                                        if (baseCountEdit == null || Strings.isNullOrEmpty(baseCountEdit.toString())) {
+                                            showDialog("参数提示", "未输入任何参数");
+                                            return;
+                                        } else {
+                                            baseCountStr = baseCountEdit.toString();
+                                        }
                                         if (minScopeEdit == null || Strings.isNullOrEmpty(minScopeEdit.toString())) {
                                             showDialog("参数提示", "未输入任何参数");
                                             return;
@@ -238,6 +261,11 @@ public class SettingFragment extends Fragment {
                                             return;
                                         }
 
+                                        baseCountValue = Integer.parseInt(baseCountStr);
+                                        if (baseCountValue < 0 || baseCountValue > 50) {
+                                            showDialog("错误提示", "偏移时间小于0或者大于50点");
+                                            return;
+                                        }
 
                                         minScopeValue = Float.parseFloat(minScopeStr);
                                         maxScopeValue = Float.parseFloat(maxScopeStr);
@@ -250,6 +278,7 @@ public class SettingFragment extends Fragment {
                                         edit.putFloat(Constants.sensorVelocity, sensorVelocityValue);
                                         edit.putFloat(Constants.measureDistance, measureDistanceValue);
                                         edit.putFloat(Constants.sensorVoltageDistance, sensorVoltageDistanceValue);
+                                        edit.putFloat(Constants.sensorBaseCount, baseCountValue);
 
                                         edit.putFloat(Constants.maxScope, maxScopeValue);
                                         edit.putFloat(Constants.minScope, minScopeValue);
@@ -274,6 +303,7 @@ public class SettingFragment extends Fragment {
             sensorVoltageDistanceEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageDistance, 3.4f)));
             measureDistanceEditText.setText(String.valueOf(setting.getFloat(Constants.measureDistance, 5.0f)));
 
+            baseCountEditText.setText(String.valueOf(setting.getInt(Constants.sensorBaseCount, 0)));
             minScopeEditText.setText(String.valueOf(setting.getFloat(Constants.minScope, -1.5f)));
             maxScopeEditText.setText(String.valueOf(setting.getFloat(Constants.maxScope, 1.5f)));
         }
@@ -302,6 +332,7 @@ public class SettingFragment extends Fragment {
         intent.putExtra(Constants.SENSOR_VELOCITY, sensorVelocityValue);
         intent.putExtra(Constants.MEASURE_DISTANCE, measureDistanceValue);
         intent.putExtra(Constants.SENSOR_VOLTAGE_DISTANCE, sensorVoltageDistanceValue);
+        intent.putExtra(Constants.SENSOR_BASE_COUNT, baseCountValue);
 
         getActivity().sendBroadcast(intent);
 
@@ -319,6 +350,7 @@ public class SettingFragment extends Fragment {
             measureDistanceEditText.setText(String.valueOf(setting.getFloat(Constants.measureDistance, 5.0f)));
             sensorVoltageDistanceEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageDistance, 3.4f)));
 
+            baseCountEditText.setText(String.valueOf(setting.getInt(Constants.sensorBaseCount,0)));
             minScopeEditText.setText(String.valueOf(setting.getFloat(Constants.minScope, -1.5f)));
             maxScopeEditText.setText(String.valueOf(setting.getFloat(Constants.maxScope, 1.5f)));
         }
