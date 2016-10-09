@@ -278,7 +278,7 @@ public class SettingFragment extends Fragment {
                                         edit.putFloat(Constants.sensorVelocity, sensorVelocityValue);
                                         edit.putFloat(Constants.measureDistance, measureDistanceValue);
                                         edit.putFloat(Constants.sensorVoltageDistance, sensorVoltageDistanceValue);
-                                        edit.putFloat(Constants.sensorBaseCount, baseCountValue);
+                                        edit.putInt(Constants.sensorBaseCount, baseCountValue);
 
                                         edit.putFloat(Constants.maxScope, maxScopeValue);
                                         edit.putFloat(Constants.minScope, minScopeValue);
@@ -350,7 +350,7 @@ public class SettingFragment extends Fragment {
             measureDistanceEditText.setText(String.valueOf(setting.getFloat(Constants.measureDistance, 5.0f)));
             sensorVoltageDistanceEditText.setText(String.valueOf(setting.getFloat(Constants.sensorVoltageDistance, 3.4f)));
 
-            baseCountEditText.setText(String.valueOf(setting.getInt(Constants.sensorBaseCount,0)));
+            baseCountEditText.setText(String.valueOf(setting.getInt(Constants.sensorBaseCount, 0)));
             minScopeEditText.setText(String.valueOf(setting.getFloat(Constants.minScope, -1.5f)));
             maxScopeEditText.setText(String.valueOf(setting.getFloat(Constants.maxScope, 1.5f)));
         }

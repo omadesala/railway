@@ -33,7 +33,7 @@ public class DistanceParser {
     }
 
     public void setBaseDataLength(int baseDataLength) {
-        baseDataLength = baseDataLength;
+        this.baseDataLength = baseDataLength;
     }
 
 
