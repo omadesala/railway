@@ -172,8 +172,12 @@ public class ADSocketService extends Service {
                 while (true) {
                     Socket incoming = serverSocket.accept();
                     Log.e(TAG, "Connected a client!connIndex:" + connIndex + " RemoteSocketAddress:" + String.valueOf(incoming.getRemoteSocketAddress()));
-                    connHandle = new Thread(new ConnectionHandle(mContext, incoming, connIndex));
-                    connHandle.start();
+                    if (connHandle == null) {
+                        connHandle = new Thread(new ConnectionHandle(mContext, incoming, connIndex));
+                        connHandle.start();
+                    } else {
+                        incoming.close();
+                    }
                     connIndex++;
                 }
 

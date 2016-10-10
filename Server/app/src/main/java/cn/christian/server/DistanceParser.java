@@ -21,7 +21,7 @@ public class DistanceParser {
 
     private static float scope = 10;
     private static float resolution = 4096;
-    private static float needNumber = 250;
+    private static int needNumber = 250;
     private static float baseVoltage = 0.0f;
     private static float basePosition = .0f;
     private int baseDataLength = 0;
@@ -59,10 +59,10 @@ public class DistanceParser {
 
             voltageDatas = Lists.newArrayList();
 
-            Float[] baseData = new Float[baseDataLength];
-            Float[] validData = new Float[voltage.length - baseDataLength];
-            validData = Arrays.copyOfRange(voltage, baseDataLength, voltage.length);
-            baseData = Arrays.copyOf(voltage, baseDataLength);
+//            Float[] baseData = new Float[baseDataLength];
+//            Float[] validData = new Float[voltage.length - baseDataLength];
+            Float[] validData = Arrays.copyOfRange(voltage, baseDataLength, voltage.length);
+            Float[] baseData = Arrays.copyOf(voltage, baseDataLength);
             baseVoltage = getAverage(baseData);
             basePosition = getDistanceFromVoltage(baseVoltage);
             Log.d(TAG, "get base position: " + basePosition);
@@ -84,6 +84,8 @@ public class DistanceParser {
 
 
         Log.d(TAG, "data enough return distance ");
+
+        voltageDatas = voltageDatas.subList(0, needNumber);
 
         Float validateData[] = new Float[voltageDatas.size()];
         Float[] validVoltage = getValidVoltage(voltageDatas.toArray(validateData));
