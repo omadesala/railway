@@ -4,13 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
-
+import cn.christian.server.application.RailWayApp;
+import cn.christian.server.dao.Record;
+import cn.christian.server.utils.Constants;
+import cn.christian.server.view.CustomMarkerView;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -25,15 +27,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
-import cn.christian.server.application.RailWayApp;
-import cn.christian.server.dao.Record;
-import cn.christian.server.utils.Constants;
-import cn.christian.server.utils.DataUtil;
-import cn.christian.server.view.CustomMarkerView;
 
 /**
  * Created by Administrator on 2016/9/10.

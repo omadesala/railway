@@ -12,6 +12,10 @@ import java.util.Date;
  */
 public class DateUtil {
 
+    private DateUtil() {
+
+    }
+
 
     public static String Date2Str(Timestamp t) {
 

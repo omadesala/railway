@@ -5,6 +5,10 @@ package cn.christian.server.utils;
  */
 public class Constants {
 
+    private Constants() {
+
+    }
+
     public static final String sensorScope = "SENSOR_SCOPE";
     public static final String sensorVelocity = "SENSOR_VELOCITY";
     public static final String measureDistance = "MEASURE_DISTANCE";

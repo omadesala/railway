@@ -1,3 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
 
+    <item
+        jar="/home/daniel/workspace/railway/Server/libs/mpandroidchartlibrary-2-1-6.jar"
+        jumboMode="false"
+        revision="24.0.2"
+        sha1="3f8beaf2f9b5357717e0b1ef9f6820e517784ea1">
+        <dex dex="/home/daniel/workspace/railway/Server/app/build/intermediates/pre-dexed/debug/mpandroidchartlibrary-2-1-6_6817bb151fd47108848b5a8ccef4b3b05df362ed.jar" />
+    </item>
+    <item
+        jar="/home/daniel/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/15.0/ed727a8d9f247e2050281cb083f1c77b09dcb5cd/guava-15.0.jar"
+        jumboMode="false"
+        revision="24.0.2"
+        sha1="ed727a8d9f247e2050281cb083f1c77b09dcb5cd">
+        <dex dex="/home/daniel/workspace/railway/Server/app/build/intermediates/pre-dexed/debug/guava-15.0_c1a387d4b6d46138df7be9ebc1b2ab71836489a5.jar" />
+    </item>
+
+</items>
